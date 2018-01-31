@@ -2,7 +2,9 @@ class VehicleTest {
 
     @org.junit.jupiter.api.BeforeEach
     void setUp() {
+        // Initializes a new vehicle object, to be used on all test cases.
         Vehicle vehicle = new Vehicle();
+        // Sets the gyro to be the initial start positions.
         vehicle.gyro.longitude = 0;
         vehicle.gyro.latitude = 0;
     }
