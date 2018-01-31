@@ -1,8 +1,8 @@
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class VehicleTest {
@@ -11,7 +11,7 @@ class VehicleTest {
     @BeforeEach
     void setUp() {
         // Initializes a new vehicle object, to be used on all test cases.
-        Vehicle vehicle = new Vehicle();
+        vehicle = new Vehicle();
         // Sets the gyro to be the initial start positions.
         //vehicle.gyro.longitude = 0;
         //vehicle.gyro.latitude = 0;
@@ -27,13 +27,14 @@ class VehicleTest {
         // Sets the gyro to the initial start position.
         vehicle.gyro.longitude = 0;
         // Call the method to be tested, which should update the gyro.
-        //vehicle.moveForward(); // needs the appropriate Gyro inputs.
+        boolean moved = vehicle.moveForward(); // needs the appropriate Gyro inputs.
+        assertTrue(moved, "Vehicle is suppose to move.");
         // Make a secondary gyro to be the expected result.
         Gyro gyro = new Gyro();
         gyro.longitude = 5;
         // Compare the expected with the vehicle gyro.
-        assertEquals(gyro, vehicle.gyro,
-                "Gyro position does not match after moving forward.");
+        assertEquals(gyro.longitude, vehicle.gyro.longitude,
+                "Gyro longitude does not match after moving forward.");
     }
 
     /**
@@ -45,12 +46,13 @@ class VehicleTest {
         // Set the gyro to be in the middle of the road, where no obstacles are.
         vehicle.gyro.longitude = 50;
         // Call the method to be tested, which should update the gyro.
-        //vehicle.moveForward();
+        boolean moved = vehicle.moveForward();
+        assertTrue(moved, "Vehicle is suppose to move.");
         // Make a secondary gyro to be the expected result.
         Gyro gyro = new Gyro();
         gyro.longitude = 55;
         // Compare the expected with the vehicle gyro.
-        assertEquals(gyro, vehicle.gyro,
+        assertEquals(gyro.longitude, vehicle.gyro.longitude,
                 "Gyro position does not match after moving forward in the middle of the road.");
     }
 
