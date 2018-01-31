@@ -1,4 +1,5 @@
 public class Vehicle {
+    public Gyro gyro;
 
     public boolean moveForward(Gyro position) {
         throw new Error("Not Implemented.");

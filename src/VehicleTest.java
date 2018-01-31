@@ -1,6 +1,11 @@
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInstance;
+
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class VehicleTest {
 
-    @org.junit.jupiter.api.BeforeEach
+    @BeforeEach
     void setUp() {
         // Initializes a new vehicle object, to be used on all test cases.
         Vehicle vehicle = new Vehicle();
