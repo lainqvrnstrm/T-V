@@ -2,8 +2,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class VehicleTest {
+    private Vehicle vehicle = new Vehicle(); // would always be the same though
 
     @BeforeEach
     void setUp() {
@@ -24,7 +27,7 @@ class VehicleTest {
         // Sets the gyro to the initial start position.
         vehicle.gyro.longitude = 0;
         // Call the method to be tested, which should update the gyro.
-        vehicle.moveForward();
+        vehicle.moveForward(); // needs the appropriate Gyro inputs.
         // Make a secondary gyro to be the expected result.
         Gyro gyro = new Gyro();
         gyro.longitude = 5;
