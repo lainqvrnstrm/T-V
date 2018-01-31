@@ -13,8 +13,8 @@ class VehicleTest {
         // Initializes a new vehicle object, to be used on all test cases.
         Vehicle vehicle = new Vehicle();
         // Sets the gyro to be the initial start positions.
-        vehicle.gyro.longitude = 0;
-        vehicle.gyro.latitude = 0;
+        //vehicle.gyro.longitude = 0;
+        //vehicle.gyro.latitude = 0;
     }
 
     /**
@@ -27,7 +27,7 @@ class VehicleTest {
         // Sets the gyro to the initial start position.
         vehicle.gyro.longitude = 0;
         // Call the method to be tested, which should update the gyro.
-        vehicle.moveForward(); // needs the appropriate Gyro inputs.
+        //vehicle.moveForward(); // needs the appropriate Gyro inputs.
         // Make a secondary gyro to be the expected result.
         Gyro gyro = new Gyro();
         gyro.longitude = 5;
@@ -45,7 +45,7 @@ class VehicleTest {
         // Set the gyro to be in the middle of the road, where no obstacles are.
         vehicle.gyro.longitude = 50;
         // Call the method to be tested, which should update the gyro.
-        vehicle.moveForward();
+        //vehicle.moveForward();
         // Make a secondary gyro to be the expected result.
         Gyro gyro = new Gyro();
         gyro.longitude = 55;
@@ -54,8 +54,27 @@ class VehicleTest {
                 "Gyro position does not match after moving forward in the middle of the road.");
     }
 
+
+    /**
+     * Pre-condition: No car in the left lane.
+     */
     @org.junit.jupiter.api.Test
-    void leftLaneDetect() {
+    void tc1_leftLaneDetect() {
+
+        assertEquals(false, vehicle.leftLaneDetect(), "A car " +
+                "is detected when there is no car present.");
+
+    }
+
+    /**
+     *
+     */
+    @org.junit.jupiter.api.Test
+    void tc2_leftLaneDetect() {
+
+
+        assertEquals(true, vehicle.leftLaneDetect());
+
     }
 
     @org.junit.jupiter.api.Test
