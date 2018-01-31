@@ -1,8 +1,13 @@
 public class Vehicle {
     public Gyro gyro;
 
-    public boolean moveForward(Gyro position) {
-        throw new Error("Not Implemented.");
+    public Vehicle() {
+        gyro = new Gyro();
+    }
+
+    public boolean moveForward() {
+        this.gyro.longitude += 5;
+        return true;
     }
 
     public boolean leftLaneDetect(Radar[] radars, Lidar lidar) {
