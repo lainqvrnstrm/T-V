@@ -1,6 +1,7 @@
 public class Vehicle {
     public Gyro gyro;
 
+
     public Vehicle() {
         gyro = new Gyro();
     }
@@ -14,6 +15,7 @@ public class Vehicle {
         this.gyro.longitude += 5;
         // Returns true because incrementing the longitude moves the car. Returning true indicates a change of longitude.
         return true;
+
     }
 
     public boolean leftLaneDetect(Radar[] radars, Lidar lidar) {

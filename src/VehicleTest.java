@@ -2,6 +2,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -54,6 +55,23 @@ class VehicleTest {
         // Compare the expected with the vehicle gyro.
         assertEquals(gyro.longitude, vehicle.gyro.longitude,
                 "Gyro position does not match after moving forward in the middle of the road.");
+    }
+    @org.junit.jupiter.api.Test
+    void tc2_moveForward(){
+        // Set the gyro to be 1 meter away from the end of the road.
+        vehicle.gyro.longitude = 99;
+        // Call the method to be tested, which should return false.
+        boolean move = vehicle.moveForward();
+        assertFalse(move, "Vehicle is not suppose to move");
+
+    }
+    @org.junit.jupiter.api.Test
+    void tc3_moveForward(){
+        // Set the gyro to be the end of the road.
+        vehicle.gyro.longitude = 100;
+        // Call the method to be tested, which should return false.
+        boolean move = vehicle.moveForward();
+        assertFalse(move, "Vehicle is not suppose to move");
     }
 
     @org.junit.jupiter.api.Test
