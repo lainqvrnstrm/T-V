@@ -287,26 +287,26 @@ class VehicleTest {
     void tc0_whereIs() {
         Gyro newGyro; //Setup a test Gyro
         vehicle.gyro.longitude = 0;
-        vehicle.gyro.latitude = 1; // Should be in the right-most lane.
+        vehicle.gyro.latitude = 0; // Should be in the right-most lane.
 
         //Fetch the vehicle gyro values using whereIs().
         newGyro = vehicle.whereIs();
         //Test if the vehicle is said to be in the correct position.
         assertEquals(newGyro.longitude, 0, "Should be in start position.");
-        assertEquals(newGyro.latitude, 1, "Should be in the first lane.");
+        assertEquals(newGyro.latitude, 0, "Should be in the first lane.");
     }
 
     @org.junit.jupiter.api.Test
     void tc1_whereIs(){
         Gyro testGyro; //Setup a test Gyro
         vehicle.gyro.longitude = 55;
-        vehicle.gyro.latitude = 1; //Should be in the right-most lane.
+        vehicle.gyro.latitude = 0; //Should be in the right-most lane.
         vehicle.moveForward();
         //Fetch the vehicle gyro values using whereIs().
         testGyro = vehicle.whereIs();
         //Test if the vehicle is said to be in the correct position.
         assertEquals(testGyro.longitude, 60, "Should be in the middle of the street.");
-        assertEquals(testGyro.latitude, 1, "Should be in the first lane.");
+        assertEquals(testGyro.latitude, 0, "Should be in the first lane.");
 
     }
 
@@ -314,13 +314,13 @@ class VehicleTest {
     void tc2_whereIs(){
         Gyro testGyro; //Setup a test Gyro
         vehicle.gyro.longitude = 35;
-        vehicle.gyro.latitude = 2; //Should be in the middle lane.
+        vehicle.gyro.latitude = 1; //Should be in the middle lane.
         vehicle.moveForward();
         //Fetch the vehicle gyro values using whereIs().
         testGyro = vehicle.whereIs();
         //Test if the vehicle is said to be in the correct position.
         assertEquals(testGyro.longitude, 40, "Should be in the middle of the street.");
-        assertEquals(testGyro.latitude, 2, "Should be in the middle lane");
+        assertEquals(testGyro.latitude, 1, "Should be in the middle lane");
 
     }
 
@@ -329,7 +329,7 @@ class VehicleTest {
         Gyro testGyro; //Setup a test Gyro
         //Sets values to the vehicle gyro that we can fetch.
         vehicle.gyro.longitude = 45;
-        vehicle.gyro.latitude = 3; //Should be in the left-most lane.
+        vehicle.gyro.latitude = 2; //Should be in the left-most lane.
         //Move forward to the expected position
         vehicle.moveForward();
         //Fetch the vehicle gyro values using whereIs().
@@ -337,7 +337,7 @@ class VehicleTest {
 
         //Test if the vehicle is said to be in the correct position.
         assertEquals(testGyro.longitude, 50, "Should be in the middle of the street.");
-        assertEquals(testGyro.latitude, 3, "Should be in the left most lane.");
+        assertEquals(testGyro.latitude, 2, "Should be in the left most lane.");
 
     }
 
@@ -346,7 +346,7 @@ class VehicleTest {
         Gyro testGyro; //Setup a test Gyro
         //Sets values to the gyro that we can fetch.
         vehicle.gyro.longitude = 95;
-        vehicle.gyro.latitude = 1; //Should be in the right-most lane.
+        vehicle.gyro.latitude = 0; //Should be in the right-most lane.
 
         //Move the vehicle forward using the moveForward() method to end up at the street end.
         vehicle.moveForward();
@@ -355,7 +355,7 @@ class VehicleTest {
         testGyro = vehicle.whereIs();
         //Test if the vehicle is said to be in the correct position.
         assertEquals(testGyro.longitude, 100, "Should be at the end of the street.");
-        assertEquals(testGyro.latitude, 1, "Should be in the right-most lane.");
+        assertEquals(testGyro.latitude, 0, "Should be in the right-most lane.");
     }
 
     @org.junit.jupiter.api.Test
@@ -363,13 +363,13 @@ class VehicleTest {
         Gyro testGyro; //Setup a test Gyro
         //Sets values to the gyro that we can fetch.
         vehicle.gyro.longitude = 100;
-        vehicle.gyro.latitude = 2; //Should be in the second lane.
+        vehicle.gyro.latitude = 1; //Should be in the second lane.
 
         //Fetch the vehicle gyro values using the whereIs() method.
         testGyro = vehicle.whereIs();
         //Test if the vehicle is said to be in the correct position.
         assertEquals(testGyro.longitude, 100, "Should be at the end of the street.");
-        assertEquals(testGyro.latitude, 2, "Should be in the middle lane.");
+        assertEquals(testGyro.latitude, 1, "Should be in the middle lane.");
     }
 
     @org.junit.jupiter.api.Test
@@ -377,12 +377,12 @@ class VehicleTest {
         Gyro testGyro; //Setup a test Gyro
         //Sets values to the gyro that we can fetch.
         vehicle.gyro.longitude = 100;
-        vehicle.gyro.latitude = 3; //Should be in the left-most lane.
+        vehicle.gyro.latitude = 2; //Should be in the left-most lane.
 
         //Fetch the vehicle gyro values using the whereIs() method.
         testGyro = vehicle.whereIs();
         //Test if the vehicle is said to be in the correct position.
         assertEquals(testGyro.longitude, 100, "Should be at the end of the street.");
-        assertEquals(testGyro.latitude, 3, "Should be in the left-most lane.");
+        assertEquals(testGyro.latitude, 2, "Should be in the left-most lane.");
     }
 }
