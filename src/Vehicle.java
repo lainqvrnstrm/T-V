@@ -49,28 +49,35 @@ public class Vehicle {
     /*
     signature updated to take arguments.
      */
-    public boolean leftLaneDetect() throws Exception {
-        Radar radar = radars[2];
-        double[] readings = radar.getValues();
+    public boolean leftLaneDetect() throws Error {
+        Radar radar0 = radars[0];
+        Radar radar1 = radars[1];
+        double[] readings = radar1.getValues();
+        double[] readings0 = radar0.getValues();
         double faultrange = 0.5;
         // If the queries values are different the sensor is not working properly.
         // And we should not move with not working sensors.
         // A half meter of different values is indicated as faulty readings.
         if(readings[0] > readings[1] +faultrange || readings[0] < readings[1] -faultrange){
-            return false;
+            if(readings0[0] > readings0[1] +faultrange || readings0[0] < readings0[1] -faultrange) {
+                throw new java.lang.Error("do not move");
+            }
         }
 
         //If the queries values are the same.
         //And the 4 meters is the max safe range.
-        if(readings[0] < readings[1] +faultrange || readings[0] > readings[1] -faultrange){
-            if(readings[0]<=4){
-                return false;
-            }else{
-                return true;
-            }
+        if(readings[0] < readings[1] +faultrange || readings[0] > readings[1] -faultrange) {
+            if (readings0[0] < readings0[1] +faultrange || readings0[0] > readings0[1] -faultrange){
+                if (readings[0] <= 4 || readings[1] <= 4) {
+                    return true;
+                } else {
+                    return false;
+                }
+        }
         }
 
-        return false;
+
+        return true;
     }
 
     /**
@@ -93,7 +100,7 @@ public class Vehicle {
             }
 
             // Less than two working sensors will receive an error.
-        } catch (Exception exception) {
+        } catch (Error error) {
             // Is alright, don't worry about it.
         } finally {
 

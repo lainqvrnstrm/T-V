@@ -1,4 +1,6 @@
+
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -82,23 +84,28 @@ class VehicleTest {
     /**
      * Pre-condition: No car in the left lane.
      */
+
     @org.junit.jupiter.api.Test
-    void tc0_leftLaneDetect(){
-        // Set so that less than 2 sensors are valid readings.
-        // This is done by making all radar values invalid, and thus only the lidar is valid.
-        vehicle.radars[0].setValues(15, 55);
-        vehicle.radars[1].setValues(40, 30);
-        vehicle.radars[2].setValues(1, 3);
-        // Calls the test method and stores the result.
-        boolean leftLaneIndicator = false;
+    void tc0_leftLaneDetect() throws Error {
+
         try {
+            // Set so that less than 2 sensors are valid readings.
+            // This is done by making all radar values invalid, and thus only the lidar is valid.
+            vehicle.radars[0].setValues(15, 55);
+            vehicle.radars[1].setValues(40, 30);
+            // Calls the test method and stores the result.
+
+
+            boolean leftLaneIndicator;
             leftLaneIndicator = vehicle.leftLaneDetect();
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            assertTrue(leftLaneIndicator);
+
+
         }
+        catch(Error e){
 
-        assertFalse(leftLaneIndicator, "the car should not move when less than 2 sensors are valid readings");
-
+        }
     }
 
     @org.junit.jupiter.api.Test
