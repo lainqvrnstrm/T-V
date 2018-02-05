@@ -90,7 +90,7 @@ public class Vehicle {
         try {
 
             // If we can change lane.
-            if (!leftLaneDetect()) {
+            if (!leftLaneDetect() && gyro.longitude <= 95) {
 
                 // Changes the lane to the left.
                 gyro.latitude += 1;

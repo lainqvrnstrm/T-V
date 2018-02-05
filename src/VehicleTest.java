@@ -168,8 +168,8 @@ class VehicleTest {
                         "when using changeLane.");
 
         // Confirm that the car did move to the correct lane.
-        assertEquals(vehicle.gyro.latitude, 1,
-                "The car must change lane.");
+        assertEquals(vehicle.gyro.latitude, 0,
+                "The car van not change lane.");
     }
 
     @org.junit.jupiter.api.Test
