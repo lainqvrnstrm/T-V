@@ -127,6 +127,10 @@ class VehicleTest {
         assertEquals(vehicle.gyro.longitude, gyro_value,
                 "The car cannot move beyond the end of the road even " +
                         "when using changeLane.");
+
+        // Confirm that the car did move to the correct lane.
+        assertEquals(vehicle.gyro.latitude, 0,
+                "The car can not change lane.");
     }
 
     @org.junit.jupiter.api.Test
@@ -141,6 +145,7 @@ class VehicleTest {
         // We are not able to move forward, because the end of road will be detected.
         int gyro_value = 96;
         vehicle.gyro.longitude = gyro_value;
+        vehicle.gyro.latitude = 0;
 
         // Calls the test method and stores the result.
         boolean changeLaneIndicator = vehicle.changeLane();
@@ -154,6 +159,10 @@ class VehicleTest {
         assertEquals(vehicle.gyro.longitude, gyro_value,
                 "The car cannot move beyond the end of the road even " +
                         "when using changeLane.");
+
+        // Confirm that the car did move to the correct lane.
+        assertEquals(vehicle.gyro.latitude, 1,
+                "The car must change lane.");
     }
 
     @org.junit.jupiter.api.Test
@@ -180,6 +189,10 @@ class VehicleTest {
         assertEquals(vehicle.gyro.longitude, gyro_value,
                 "The car cannot move beyond the end of the road even " +
                         "when using changeLane.");
+
+        // Confirm that the car did move to the correct lane.
+        assertEquals(vehicle.gyro.latitude, 0,
+                "The car can not change lane.");
     }
 
     @org.junit.jupiter.api.Test
@@ -202,7 +215,73 @@ class VehicleTest {
         // Confirm that the car did move.
         assertEquals(vehicle.gyro.longitude, gyro_value +5,
                 "The car is suppose to move forward, even if it cannot change lane.");
+
+        // Confirm that the car did move to the correct lane.
+        assertEquals(vehicle.gyro.latitude, 0,
+                "The car can not change lane.");
     }
+
+    @org.junit.jupiter.api.Test
+    void tc4_changeLane() {
+        // Set so that more than two sensors provide a valid reading.
+        vehicle.radars[0].setValues(4, 4);
+        vehicle.radars[1].setValues(4, 4);
+
+        // Front facing radar, has to be accurate with the amount of space left on the road.
+        vehicle.radars[2].setValues(50, 50);
+
+        // The car will be able to move forward, because we are in the middle of the road.
+        int gyro_value = 50;
+        vehicle.gyro.longitude = gyro_value;
+
+        // Calls the test method and stores the result.
+        boolean changeLaneIndicator = vehicle.changeLane();
+
+        // Assert that we did not change lane, because incorrect sensor readings.
+        assertFalse(changeLaneIndicator,
+                "The car can not change lane when there is a car detected in the lane to the left of it.");
+
+        // Confirm that the car did move.
+        assertEquals(vehicle.gyro.longitude, gyro_value +5,
+                "The car is suppose to move forward, even if it cannot change lane.");
+
+        // Confirm that the car did move to the correct lane.
+        assertEquals(vehicle.gyro.latitude, 0,
+                "The car can not change lane.");
+    }
+
+    @org.junit.jupiter.api.Test
+    void tc5_changeLane() {
+        // Set so that more than two sensors provide a valid reading.
+        vehicle.radars[0].setValues(50, 50);
+        vehicle.radars[1].setValues(50, 50);
+
+        // Front facing radar, has to be accurate with the amount of space left on the road.
+        vehicle.radars[2].setValues(50, 50);
+
+        // The car will be able to move forward, because we are in the middle of the road.
+        int gyro_value = 50;
+        vehicle.gyro.longitude = gyro_value;
+
+        // Set lane to be 0.
+        vehicle.gyro.latitude = 0;
+
+        // Calls the test method and stores the result.
+        boolean changeLaneIndicator = vehicle.changeLane();
+
+        // Assert that we did not change lane, because incorrect sensor readings.
+        assertTrue(changeLaneIndicator,
+                "The car should change lane when there is no car detected in the lane to the left of it.");
+
+        // Confirm that the car did move.
+        assertEquals(vehicle.gyro.longitude, gyro_value +5,
+                "The car is suppose to move forward, even if it cannot change lane.");
+
+        // Confirm that the car did move to the correct lane.
+        assertEquals(vehicle.gyro.latitude, 1,
+                "The car must change lane.");
+    }
+
 
     @org.junit.jupiter.api.Test
     void tc0_whereIs() {

@@ -79,21 +79,23 @@ public class Vehicle {
      */
     public boolean changeLane() {
 
+        // Catches invalid leftLaneDetect errors.
         try {
 
             // If we can change lane.
             if (!leftLaneDetect()) {
 
-                // We call the moveForward method to move the car forward and if it was successful,
-                // we indicate a correct lane change.
-                if (moveForward()) {
-                    return true;
-                }
+                // Changes the lane to the left.
+                gyro.latitude += 1;
 
+                // Return a successful change lane.
+                return true;
             }
 
             // Less than two working sensors will receive an error.
         } catch (Exception exception) {
+            // Is alright, don't worry about it.
+        } finally {
 
             // Moves the car forward if possible after changing the lane.
             // This is not dependent on whether we changed lane or not.
