@@ -83,19 +83,25 @@ public class Vehicle {
 
             // If we can change lane.
             if (!leftLaneDetect()) {
+
+                // We call the moveForward method to move the car forward and if it was successful,
+                // we indicate a correct lane change.
+                if (moveForward()) {
+                    return true;
+                }
+
             }
 
-            return true;
-
-            // Less than two working sensors will receive and error.
+            // Less than two working sensors will receive an error.
         } catch (Exception exception) {
-            return false;
 
-        } finally {
             // Moves the car forward if possible after changing the lane.
             // This is not dependent on whether we changed lane or not.
-            this.moveForward();
+            moveForward();
         }
+
+        // Catches all sad paths which do not return true.
+        return false;
     }
 
     public Gyro whereIs() {
