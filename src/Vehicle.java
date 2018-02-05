@@ -50,8 +50,27 @@ public class Vehicle {
     signature updated to take arguments.
      */
     public boolean leftLaneDetect() throws Exception {
-        boolean result = false;
-        return result;
+        Radar radar = radars[2];
+        double[] readings = radar.getValues();
+        double faultrange = 0.5;
+        // If the queries values are different the sensor is not working properly.
+        // And we should not move with not working sensors.
+        // A half meter of different values is indicated as faulty readings.
+        if(readings[0] > readings[1] +faultrange || readings[0] < readings[1] -faultrange){
+            return false;
+        }
+
+        //If the queries values are the same.
+        //And the 4 meters is the max safe range.
+        if(readings[0] < readings[1] +faultrange || readings[0] > readings[1] -faultrange){
+            if(readings[0]<=4){
+                return false;
+            }else{
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
