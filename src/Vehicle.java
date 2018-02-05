@@ -100,6 +100,7 @@ public class Vehicle {
 
     public Gyro whereIs() {
         //Returns the vehicle Gyro object and its related values.
+        //Added for tc0 but used by all related test cases.
         return this.gyro;
     }
 }

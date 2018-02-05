@@ -166,6 +166,7 @@ class VehicleTest {
                         "when using changeLane.");
     }
 
+    @org.junit.jupiter.api.Test
     void tc0_whereIs() {
         Gyro newGyro; //Setup a test Gyro
         vehicle.gyro.longitude = 0;
