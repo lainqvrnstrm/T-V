@@ -16,7 +16,7 @@ public class Vehicle {
         Radar radar = new Radar();
         // Increments the longitude of the gyro to simulate moving forward.
         this.gyro.longitude += 5;
-        if(radar.getValue1()==radar.getValue2()&&radar.getValue1() <= 5.0){
+        if(radar.getValue1()==radar.getValue2()&& radar.getValue1() < 5.0){
             return false;
         }else {
             // Returns true because incrementing the longitude moves the car. Returning true indicates a change of longitude.
@@ -37,6 +37,8 @@ public class Vehicle {
     }
 
     public Gyro whereIs() {
-        throw new Error("Not Implemented.");
+
+        return gyro;
+       // throw new Error("Not Implemented.");
     }
 }

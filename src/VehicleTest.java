@@ -92,7 +92,6 @@ class VehicleTest {
     @org.junit.jupiter.api.Test
     void tc2_leftLaneDetect() {
 
-
         assertEquals(true, vehicle.leftLaneDetect());
 
     }
@@ -102,6 +101,58 @@ class VehicleTest {
     }
 
     @org.junit.jupiter.api.Test
-    void whereIs() {
+    void tc0_whereIs() {
+        Gyro newGyro;
+        vehicle.gyro.longitude = 0;
+        vehicle.gyro.latitude = 1;
+
+        newGyro = vehicle.whereIs();
+
+        assertEquals(newGyro.longitude, 0, "Should be in start position.");
+        assertEquals(newGyro.latitude, 1, "Should be in the first lane.");
+    }
+
+    @org.junit.jupiter.api.Test
+    void tc1_whereIs(){
+        Gyro testGyro;
+        vehicle.gyro.longitude = 50;
+        vehicle.gyro.latitude = 1;
+
+        testGyro = vehicle.whereIs();
+
+        assertEquals(testGyro.longitude, 50, "Should be in the middle of the street.");
+        assertEquals(testGyro.latitude, 1, "Should be in the first lane.");
+
+    }
+
+    @org.junit.jupiter.api.Test
+    void tc2_whereIs(){
+        Gyro testGyro;
+        vehicle.gyro.longitude = 50;
+        vehicle.gyro.latitude = 2;
+
+        testGyro = vehicle.whereIs();
+
+        assertEquals(testGyro.longitude, 50, "Should be in the middle of the street.");
+        assertEquals(testGyro.latitude, 2, "Should be in the middle lane");
+
+    }
+
+    @org.junit.jupiter.api.Test
+    void tc3_whereIs(){
+        Gyro testGyro;
+        vehicle.gyro.longitude = 50;
+        vehicle.gyro.latitude = 3;
+
+        testGyro = vehicle.whereIs();
+
+        assertEquals(testGyro.longitude, 50, "Should be in the middle of the street.");
+        assertEquals(testGyro.latitude, 3, "Should be in the left most lane.");
+
+    }
+
+    @org.junit.jupiter.api.Test
+    void tc4_whereIs(){
+        Gyro testGyro;
     }
 }
