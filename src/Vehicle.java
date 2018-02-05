@@ -49,13 +49,34 @@ public class Vehicle {
     /*
     signature updated to take arguments.
      */
-    public boolean leftLaneDetect() {
+    public boolean leftLaneDetect() throws Exception {
         boolean result = false;
         return result;
     }
 
-    public boolean changeLane(Radar[] radars, Lidar lidar) {
-        throw new Error("Not Implemented.");
+    /**
+     *
+     * @return whether or not the car has changed lane.
+     */
+    public boolean changeLane() {
+
+        try {
+
+            // If we can change lane.
+            if (!leftLaneDetect()) {
+            }
+
+            return true;
+
+            // Less than two working sensors will receive and error.
+        } catch (Exception exception) {
+            return false;
+
+        } finally {
+            // Moves the car forward if possible after changing the lane.
+            // This is not dependent on whether we changed lane or not.
+            this.moveForward();
+        }
     }
 
     public Gyro whereIs() {
