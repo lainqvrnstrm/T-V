@@ -1,4 +1,6 @@
+
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -82,40 +84,46 @@ class VehicleTest {
     /**
      * Pre-condition: No car in the left lane.
      */
+
     @org.junit.jupiter.api.Test
-    void tc0_leftLaneDetect(){
-        // Set so that less than 2 sensors are valid readings.
-        // This is done by making all radar values invalid, and thus only the lidar is valid.
-        vehicle.radars[0].setValues(15, 55);
-        vehicle.radars[1].setValues(40, 30);
-        vehicle.radars[2].setValues(1, 3);
-        // Calls the test method and stores the result.
-        boolean leftLaneIndicator = false;
+    void tc0_leftLaneDetect() throws Error {
+
         try {
+            // Set so that less than 2 sensors are valid readings.
+            // This is done by making all radar values invalid, and thus only the lidar is valid.
+            vehicle.radars[0].setValues(15, 55);
+            vehicle.radars[1].setValues(40, 30);
+            // Calls the test method and stores the result.
+
+
+            boolean leftLaneIndicator;
             leftLaneIndicator = vehicle.leftLaneDetect();
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            assertTrue(leftLaneIndicator);
+
+
         }
+        catch(Error e){
 
-        assertFalse(leftLaneIndicator, "the car should not move when less than 2 sensors are valid readings");
-
+        }
     }
 
 
 
 
     @org.junit.jupiter.api.Test
-    void tc1_leftLaneDetect() {
+    void tc1_leftLaneDetect() throws Exception {
         //Set so that 2 sensors are valid readings.
         //This is done by making 2 radar values valid and there is no obstacle detected.
         vehicle.radars[0].setValues(15,15);
         vehicle.radars[1].setValues(15,15);
 
         // Calls the test method and stores the result.
-        boolean leftLaneIndicator = vehicle.changeLane();
+        boolean leftLaneIndicator = vehicle.leftLaneDetect();
+
 
         // Assert that we changed lane.
-        assertTrue(leftLaneIndicator, "the car should change lane");
+        assertFalse(leftLaneIndicator, "the sensors readings are valid, the car should change lane");
 
     }
 
@@ -123,23 +131,23 @@ class VehicleTest {
      *
      */
     @org.junit.jupiter.api.Test
-    void tc2_leftLaneDetect() {
+    void tc2_leftLaneDetect() throws Exception {
         //Set so that 2 sensors are valid readings.
         // This is done by making 2 radar values valid but there is a obstacle detected.
         vehicle.radars[0].setValues(15,15);
         vehicle.radars[1].setValues(4,4);
 
         // Calls the test method and stores the result.
-        boolean leftLaneIndicator = vehicle.changeLane();
+        boolean leftLaneIndicator = vehicle.leftLaneDetect();
 
         // Assert that we did not change lane.
-        assertTrue(leftLaneIndicator, "the car should not change lane");
+        assertTrue(leftLaneIndicator, "the there is a obstacle, the car should not change lane");
 
 
     }
 
     @org.junit.jupiter.api.Test
-    void tc0_changeLane() {
+    void tc0_changeLane() throws Error {
         // Set so that less than 2 sensors are valid readings.
         // This is done by making all radar values invalid, and thus only the lidar is valid.
         vehicle.radars[0].setValues(15, 55);
