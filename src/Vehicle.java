@@ -59,7 +59,7 @@ public class Vehicle {
     }
 
     public Gyro whereIs() {
-
+        //Returns the vehicle Gyro object and its related values.
         return gyro;
        // throw new Error("Not Implemented.");
     }

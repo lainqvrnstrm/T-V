@@ -143,11 +143,13 @@ class VehicleTest {
     @org.junit.jupiter.api.Test
     void tc3_whereIs(){
         Gyro testGyro;
+        //Sets values to the vehicle gyro that we can fetch.
         vehicle.gyro.longitude = 50;
         vehicle.gyro.latitude = 3;
-
+        //Use the whereIs() method to fetch the vehicle gyro values.
         testGyro = vehicle.whereIs();
 
+        //Test if the vehicle is in the correct positions.
         assertEquals(testGyro.longitude, 50, "Should be in the middle of the street.");
         assertEquals(testGyro.latitude, 3, "Should be in the left most lane.");
 
