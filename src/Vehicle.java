@@ -86,27 +86,36 @@ public class Vehicle {
      */
     public boolean changeLane() {
 
+        // Catches invalid leftLaneDetect errors.
         try {
 
             // If we can change lane.
             if (!leftLaneDetect()) {
+
+                // Changes the lane to the left.
+                gyro.latitude += 1;
+
+                // Return a successful change lane.
+                return true;
             }
 
-            return true;
-
-            // Less than two working sensors will receive and error.
+            // Less than two working sensors will receive an error.
         } catch (Error error) {
-            return false;
-
+            // Is alright, don't worry about it.
         } finally {
+
             // Moves the car forward if possible after changing the lane.
             // This is not dependent on whether we changed lane or not.
-            this.moveForward();
+            moveForward();
         }
+
+        // Catches all sad paths which do not return true.
+        return false;
     }
 
     public Gyro whereIs() {
         //Returns the vehicle Gyro object and its related values.
+        //Added for tc0 but used by all related test cases.
         return this.gyro;
     }
 }
