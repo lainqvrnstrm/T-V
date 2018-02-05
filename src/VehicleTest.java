@@ -99,7 +99,7 @@ class VehicleTest {
             boolean leftLaneIndicator;
             leftLaneIndicator = vehicle.leftLaneDetect();
 
-            assertTrue(leftLaneIndicator);
+            assertTrue(leftLaneIndicator, "The radars readings are not valid");
 
 
         }
@@ -107,6 +107,36 @@ class VehicleTest {
 
         }
     }
+    @org.junit.jupiter.api.Test
+    void tc1_leftLaneDetect() throws Error{
+
+        //Set 2 sensors are valid readings
+        vehicle.radars[0].setValues(15, 15);
+        vehicle.radars[1].setValues(30, 30);
+
+        // Calls the test method and stores the result.
+        boolean leftLaneIndicator;
+        leftLaneIndicator = vehicle.leftLaneDetect();
+
+        assertFalse(leftLaneIndicator, "Nothing is detected on the left lane");
+
+    }
+    @org.junit.jupiter.api.Test
+    void tc2_leftLaneDetect() throws Error{
+
+        //Set 2 sensors are valid readings
+        //But one of the sensor is detecting someting on the left lane
+        vehicle.radars[0].setValues(15, 15);
+        vehicle.radars[1].setValues(3, 3);
+
+        // Calls the test method and stores the result.
+        boolean leftLaneIndicator;
+        leftLaneIndicator = vehicle.leftLaneDetect();
+
+        
+        assertTrue(leftLaneIndicator, "there is something detected on the left lane");
+    }
+
 
     @org.junit.jupiter.api.Test
     void tc0_changeLane() {
