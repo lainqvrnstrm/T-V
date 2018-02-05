@@ -13,9 +13,11 @@ class VehicleTest {
     void setUp() {
         // Initializes a new vehicle object, to be used on all test cases.
         vehicle = new Vehicle();
+        // Sets the forward facing sensor to a non-detecting value.
+        vehicle.radars[2].setValues(50.0, 50.0);
         // Sets the gyro to be the initial start positions.
-        //vehicle.gyro.longitude = 0;
-        //vehicle.gyro.latitude = 0;
+        vehicle.gyro.longitude = 0;
+        vehicle.gyro.latitude = 0;
     }
 
     /**
