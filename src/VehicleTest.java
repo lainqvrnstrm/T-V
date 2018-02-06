@@ -334,11 +334,14 @@ class VehicleTest {
     @org.junit.jupiter.api.Test
     void tc3_whereIs(){
         Gyro testGyro; //Setup a test Gyro
+        //Sets radar values so that we can use changeLane().
+        vehicle.radars[0].setValues(15, 15);
+        vehicle.radars[1].setValues(15, 15);
         //Sets values to the vehicle gyro that we can fetch.
         vehicle.gyro.longitude = 45;
-        vehicle.gyro.latitude = 2; //Should be in the left-most lane.
+        vehicle.gyro.latitude = 1; //Should be in the left-most lane.
         //Move forward to the expected position
-        vehicle.moveForward();
+        vehicle.changeLane();
         //Fetch the vehicle gyro values using whereIs().
         testGyro = vehicle.whereIs();
 
