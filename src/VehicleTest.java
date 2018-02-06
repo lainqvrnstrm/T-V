@@ -94,13 +94,13 @@ class VehicleTest {
             vehicle.lidar.writeIndex(45, 50);
 
             // Make a vehicle clone to fake the second query readings.
-            Vehicle vehicle_copy = vehicle;
+            Vehicle vehicle_copy = new Vehicle();
             vehicle_copy.backSideRadar.write(55);
             vehicle_copy.frontSideRadar.write(30);
             vehicle_copy.lidar.writeIndex(45, 40);
 
             boolean leftLaneIndicator;
-            leftLaneIndicator = vehicle.leftLaneDetect();
+            leftLaneIndicator = vehicle.leftLaneDetect(vehicle_copy);
 
             assertTrue(leftLaneIndicator, "The radars readings are not valid");
             
@@ -159,7 +159,7 @@ class VehicleTest {
         vehicle.lidar.writeIndex(45, 55);
 
         // Make a vehicle clone to fake the second query readings.
-        Vehicle vehicle_copy = vehicle;
+        Vehicle vehicle_copy = new Vehicle();
         vehicle_copy.backSideRadar.write(55);
         vehicle_copy.frontSideRadar.write(30);
         vehicle_copy.frontRadar.write(3);
@@ -259,7 +259,7 @@ class VehicleTest {
         vehicle.frontSideRadar.write(5);
 
         // Make a vehicle clone to fake the second query readings.
-        Vehicle vehicle_copy = vehicle;
+        Vehicle vehicle_copy = new Vehicle();
         vehicle_copy.backSideRadar.write(5);
         vehicle_copy.frontSideRadar.write(45);
 
@@ -320,6 +320,8 @@ class VehicleTest {
         // Set so that more than two sensors provide a valid reading.
         vehicle.backSideRadar.write(50);
         vehicle.frontSideRadar.write(50);
+        // There is no car adjacent.
+        vehicle.lidar.writeIndex(45, 20);
 
         // Front facing radar, has to be accurate with the amount of space left on the road.
         vehicle.frontRadar.write(50);
@@ -395,6 +397,9 @@ class VehicleTest {
         //Sets radar values so that we can use changeLane().
         vehicle.backSideRadar.write(15);
         vehicle.frontSideRadar.write(15);
+        // Makes sure no vehicle to the left.
+        vehicle.lidar.writeIndex(45, 20);
+
         //Sets values to the vehicle gyro that we can fetch.
         vehicle.gyro.longitude = 45;
         vehicle.gyro.latitude = 1; //Should be in the left-most lane.
