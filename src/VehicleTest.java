@@ -1,6 +1,5 @@
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,11 +14,6 @@ class VehicleTest {
     void setUp() {
         // Initializes a new vehicle object, to be used on all test cases.
         vehicle = new Vehicle();
-        // Sets the forward facing sensor to a non-detecting value.
-        vehicle.radars[2].setValues(50.0, 50.0);
-        // Sets the gyro to be the initial start positions.
-        vehicle.gyro.longitude = 0;
-        vehicle.gyro.latitude = 0;
     }
 
     /**
@@ -98,7 +92,7 @@ class VehicleTest {
             // Set so that less than 2 sensors are valid readings.
             // This is done by making all radar values invalid, and thus only the lidar is valid.
             vehicle.radars[0].setValues(15, 55);
-            vehicle.radars[1].setValues(40, 30);
+            vehicle.radars[1].setValues(40, 30); // TODO
 
             // Calls the test method and stores the result.
 
@@ -124,8 +118,8 @@ class VehicleTest {
     void tc1_leftLaneDetect() throws Error{
 
         //Set 2 sensors are valid readings
-        vehicle.radars[0].setValues(15, 15);
-        vehicle.radars[1].setValues(30, 30);
+        vehicle.backSideRadar.write(15);
+        vehicle.frontSideRadar.write(15);
 
         // Calls the test method and stores the result.
         boolean leftLaneIndicator;
@@ -140,8 +134,8 @@ class VehicleTest {
 
         //Set 2 sensors are valid readings
         //But one of the sensor is detecting someting on the left lane
-        vehicle.radars[0].setValues(15, 15);
-        vehicle.radars[1].setValues(3, 3);
+        vehicle.backSideRadar.write(15);
+        vehicle.frontSideRadar.write(3);
 
         // Calls the test method and stores the result.
         boolean leftLaneIndicator;
@@ -158,7 +152,7 @@ class VehicleTest {
         // This is done by making all radar values invalid, and thus only the lidar is valid.
         vehicle.radars[0].setValues(15, 55);
         vehicle.radars[1].setValues(40, 30);
-        vehicle.radars[2].setValues(1, 3);
+        vehicle.radars[2].setValues(1, 3); // TODO
 
         // We are not able to move forward, because the end of road will be detected.
         // Because the radar values are invalid moving forward will be invalidated using two different methods
@@ -187,11 +181,11 @@ class VehicleTest {
     @org.junit.jupiter.api.Test
     void tc1_changeLane() {
         // Set so that more than two sensors provide a valid reading.
-        vehicle.radars[0].setValues(15, 15);
-        vehicle.radars[1].setValues(15, 15);
+        vehicle.backSideRadar.write(15);
+        vehicle.frontSideRadar.write(15);
 
         // Front facing radar, has to be accurate with the amount of space left on the road.
-        vehicle.radars[2].setValues(4, 4);
+        vehicle.frontRadar.write(4);
 
         // We are not able to move forward, because the end of road will be detected.
         int gyro_value = 96;
@@ -219,11 +213,11 @@ class VehicleTest {
     @org.junit.jupiter.api.Test
     void tc2_changeLane() {
         // Set so that more than two sensors provide a valid reading.
-        vehicle.radars[0].setValues(4, 4);
-        vehicle.radars[1].setValues(4, 4);
+        vehicle.backSideRadar.write(4);
+        vehicle.frontSideRadar.write(4);
 
         // Front facing radar, has to be accurate with the amount of space left on the road.
-        vehicle.radars[2].setValues(4, 4);
+        vehicle.frontRadar.write(4);
 
         // We are not able to move forward, because the end of road will be detected.
         int gyro_value = 96;
@@ -250,7 +244,7 @@ class VehicleTest {
     void tc3_changeLane() {
         // Set it so that less than two sensors are functioning.
         vehicle.radars[0].setValues(45, 5);
-        vehicle.radars[1].setValues(4, 45);
+        vehicle.radars[1].setValues(4, 45); // TODO
 
         // The car will be able to move forward, because we are in the middle of the road.
         int gyro_value = 50;
@@ -275,11 +269,11 @@ class VehicleTest {
     @org.junit.jupiter.api.Test
     void tc4_changeLane() {
         // Set so that more than two sensors provide a valid reading.
-        vehicle.radars[0].setValues(4, 4);
-        vehicle.radars[1].setValues(4, 4);
+        vehicle.backSideRadar.write(4);
+        vehicle.frontSideRadar.write(4);
 
         // Front facing radar, has to be accurate with the amount of space left on the road.
-        vehicle.radars[2].setValues(50, 50);
+        vehicle.frontRadar.write(50);
 
         // The car will be able to move forward, because we are in the middle of the road.
         int gyro_value = 50;
@@ -304,11 +298,11 @@ class VehicleTest {
     @org.junit.jupiter.api.Test
     void tc5_changeLane() {
         // Set so that more than two sensors provide a valid reading.
-        vehicle.radars[0].setValues(50, 50);
-        vehicle.radars[1].setValues(50, 50);
+        vehicle.backSideRadar.write(50);
+        vehicle.frontSideRadar.write(50);
 
         // Front facing radar, has to be accurate with the amount of space left on the road.
-        vehicle.radars[2].setValues(50, 50);
+        vehicle.frontRadar.write(50);
 
         // The car will be able to move forward, because we are in the middle of the road.
         int gyro_value = 50;
@@ -379,8 +373,8 @@ class VehicleTest {
     void tc3_whereIs(){
         Gyro testGyro; //Setup a test Gyro
         //Sets radar values so that we can use changeLane().
-        vehicle.radars[0].setValues(15, 15);
-        vehicle.radars[1].setValues(15, 15);
+        vehicle.backSideRadar.write(15);
+        vehicle.frontSideRadar.write(15);
         //Sets values to the vehicle gyro that we can fetch.
         vehicle.gyro.longitude = 45;
         vehicle.gyro.latitude = 1; //Should be in the left-most lane.
