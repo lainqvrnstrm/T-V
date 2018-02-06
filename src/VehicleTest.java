@@ -86,6 +86,7 @@ class VehicleTest {
      */
 
     @org.junit.jupiter.api.Test
+    // TC0 for leftLaneDetect, The radars readings are not valid.
     void tc0_leftLaneDetect() throws Error {
 
         try {
@@ -100,14 +101,14 @@ class VehicleTest {
             leftLaneIndicator = vehicle.leftLaneDetect();
 
             assertTrue(leftLaneIndicator, "The radars readings are not valid");
-
-
+            
         }
         catch(Error e){
-
+            System.out.println("\nThe sensors are not reading the valid values");
         }
     }
     @org.junit.jupiter.api.Test
+    //TC1 for leftLaneDetect, 2 or more senors are working, and nothing is detected on the left lane
     void tc1_leftLaneDetect() throws Error{
 
         //Set 2 sensors are valid readings
@@ -122,6 +123,7 @@ class VehicleTest {
 
     }
     @org.junit.jupiter.api.Test
+    //TC2 for leftLaneDetect, 2 or more sensors are working, but there is a obstacle detected on the left lane.
     void tc2_leftLaneDetect() throws Error{
 
         //Set 2 sensors are valid readings
@@ -133,7 +135,7 @@ class VehicleTest {
         boolean leftLaneIndicator;
         leftLaneIndicator = vehicle.leftLaneDetect();
 
-        
+
         assertTrue(leftLaneIndicator, "there is something detected on the left lane");
     }
 
