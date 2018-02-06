@@ -84,9 +84,7 @@ class VehicleTest {
     // TC0 for leftLaneDetect, The radars readings are not valid.
     void tc0_leftLaneDetect() throws Error {
 
-
         boolean caught = false;
-
 
         try {
             // Set so that less than 2 sensors are valid readings.

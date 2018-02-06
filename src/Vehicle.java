@@ -52,27 +52,32 @@ public class Vehicle {
     /*
     signature updated to take arguments.
      */
-    public boolean leftLaneDetect() throws Error {
-        Radar radar0 = backSideRadar;
-        Radar radar1 = frontSideRadar;
-        double readings = radar1.read();
-        double readings0 = radar0.read();
+    public boolean leftLaneDetect(Vehicle... secondQuery) throws Error {
+        double[] readings = {backSideRadar.read(), frontSideRadar.read()};
+
+        double[] secondreadings = {0,0};
+        if (secondQuery[0] != null) {
+            secondreadings[0] = secondQuery[0].backSideRadar.read();
+            secondreadings[1] = secondQuery[0].frontSideRadar.read();
+        } else {
+            secondreadings = readings;
+        }
+
         double faultrange = 0.5;
         // If the queries values are different the sensor is not working properly.
         // And we should not move with not working sensors.
         // A half meter of different values is indicated as faulty readings.
         /*
         if(readings[0] > readings[1] +faultrange || readings[0] < readings[1] -faultrange){
-            if(readings0[0] > readings0[1] +faultrange || readings0[0] < readings0[1] -faultrange) {
-                throw new java.lang.Error("do not move");
+            if(secondQuery[0] > secondreadings +faultrange || secondQuery[0] < secondQuery[1] -faultrange) {
+                throw new Error("do not move");
             }
         }
-
 
         //If the queries values are the same.
         //And the 4 meters is the max safe range.
         if(readings[0] < readings[1] +faultrange || readings[0] > readings[1] -faultrange) {
-            if (readings0[0] < readings0[1] +faultrange || readings0[0] > readings0[1] -faultrange){
+            if (secondQuery[0] < secondQuery[1] +faultrange || secondQuery[0] > secondQuery[1] -faultrange){
                 if (readings[0] <= 4 || readings[1] <= 4) {
                     return true;
                 } else {
