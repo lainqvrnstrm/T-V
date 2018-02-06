@@ -91,11 +91,13 @@ class VehicleTest {
             // This is done by making all radar values invalid, and thus only the lidar is valid.
             vehicle.backSideRadar.write(15);
             vehicle.frontSideRadar.write(40);
+            vehicle.lidar.writeIndex(45, 50);
 
             // Make a vehicle clone to fake the second query readings.
             Vehicle vehicle_copy = vehicle;
             vehicle_copy.backSideRadar.write(55);
             vehicle_copy.frontSideRadar.write(30);
+            vehicle_copy.lidar.writeIndex(45, 40);
 
             boolean leftLaneIndicator;
             leftLaneIndicator = vehicle.leftLaneDetect();
@@ -103,7 +105,6 @@ class VehicleTest {
             assertTrue(leftLaneIndicator, "The radars readings are not valid");
             
         }
-
 
         // Catches errors.
         catch(Error e){
@@ -120,6 +121,7 @@ class VehicleTest {
         //Set 2 sensors are valid readings
         vehicle.backSideRadar.write(15);
         vehicle.frontSideRadar.write(15);
+        vehicle.lidar.writeIndex(45, 15);
 
         // Calls the test method and stores the result.
         boolean leftLaneIndicator;
@@ -136,6 +138,7 @@ class VehicleTest {
         //But one of the sensor is detecting someting on the left lane
         vehicle.backSideRadar.write(15);
         vehicle.frontSideRadar.write(3);
+        vehicle.lidar.writeIndex(45, 5);
 
         // Calls the test method and stores the result.
         boolean leftLaneIndicator;
@@ -153,12 +156,14 @@ class VehicleTest {
         vehicle.backSideRadar.write(15);
         vehicle.frontSideRadar.write(40);
         vehicle.frontRadar.write(1);
+        vehicle.lidar.writeIndex(45, 55);
 
         // Make a vehicle clone to fake the second query readings.
         Vehicle vehicle_copy = vehicle;
         vehicle_copy.backSideRadar.write(55);
         vehicle_copy.frontSideRadar.write(30);
         vehicle_copy.frontRadar.write(3);
+        vehicle_copy.lidar.writeIndex(45, 50);
 
         // We are not able to move forward, because the end of road will be detected.
         // Because the radar values are invalid moving forward will be invalidated using two different methods
@@ -189,6 +194,7 @@ class VehicleTest {
         // Set so that more than two sensors provide a valid reading.
         vehicle.backSideRadar.write(15);
         vehicle.frontSideRadar.write(15);
+        vehicle.lidar.writeIndex(45, 18);
 
         // Front facing radar, has to be accurate with the amount of space left on the road.
         vehicle.frontRadar.write(4);
@@ -256,6 +262,9 @@ class VehicleTest {
         Vehicle vehicle_copy = vehicle;
         vehicle_copy.backSideRadar.write(5);
         vehicle_copy.frontSideRadar.write(45);
+
+        // Invalid lidar reading, because it does not match the original.
+        vehicle_copy.lidar.writeIndex(45, 33);
 
         // The car will be able to move forward, because we are in the middle of the road.
         int gyro_value = 50;

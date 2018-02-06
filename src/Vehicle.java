@@ -3,7 +3,7 @@ public class Vehicle {
     public Radar backSideRadar;
     public Radar frontSideRadar;
     public Radar frontRadar;
-    private Lidar lidar;
+    public Lidar lidar;
 
     public Vehicle() {
         gyro = new Gyro();
@@ -63,8 +63,6 @@ public class Vehicle {
             readingsSecondQuery[1] = secondQuery[0].frontSideRadar.read();
             lidarsSecondQuery = secondQuery[0].lidar.read();
         }
-
-        
 
 
         return true;

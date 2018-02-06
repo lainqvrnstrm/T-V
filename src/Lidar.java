@@ -30,6 +30,15 @@ public class Lidar {
 
     }
 
+    /**
+     * Sets a value at the given index.
+     * @param index
+     * @param value
+     */
+    public void writeIndex(int index, int value) {
+        reading[index] = value;
+    }
+
 
 
 
