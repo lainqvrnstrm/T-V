@@ -1,3 +1,4 @@
+//Class and child methods added to satisfy both tc2_moveForward and tc0_leftLaneDetect.
 public class Radar {
 
     /**

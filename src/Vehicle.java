@@ -1,14 +1,14 @@
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
-public class Vehicle {
+public class Vehicle { //tc0_moveForward()
     public Gyro gyro;
     public Radar backSideRadar;
     public Radar frontSideRadar;
     public Radar frontRadar;
     public Lidar lidar;
 
-    public Vehicle() {
+    public Vehicle() { //tc0_moveForward()
         gyro = new Gyro();
         backSideRadar = new Radar();
         frontSideRadar = new Radar();
@@ -21,41 +21,42 @@ public class Vehicle {
      * @return If the car's position has changed or not.
      */
     public boolean moveForward() {
-        double reading = frontRadar.read();
+        double reading = frontRadar.read(); // Added for tc2.
 
         // If the queries values are different the sensor is not working properly.
         // And we should not move with not working sensors.
         // A half meter of different values is indicated as faulty readings.
         double faultrange = 0.5;
-        if (reading > reading +faultrange || reading < reading -faultrange) {
+        if (reading > reading +faultrange || reading < reading -faultrange) { //Added for tc2.
             return false;
         }
 
         // If the sensor readings are less than the move distance, we do not move.
         double move_distance = 5.0;
-        if (reading <= move_distance) {
+        if (reading <= move_distance) { //Added for tc2.
             return false;
         }
 
         // If the gyro is less than the road distance and the move distance so we can't go beyond the road.
         double road_distance = 100;
-        if(gyro.longitude <= road_distance-move_distance){
+        if(gyro.longitude <= road_distance-move_distance){ //Added for tc0.
 
             // tc0: Increments the longitude of the gyro to simulate moving forward.
-            this.gyro.longitude += (int) move_distance;
+            this.gyro.longitude += (int) move_distance; //Added for tc0.
 
             // tc0: Returns true because incrementing the longitude moves the car. Returning true indicates a change of longitude.
             return true;
         }
 
         // Return false because no happy branch was successful.
-        return false;
+        return false; //Added for tc0.
     }
 
     /*
     signature updated to take arguments.
      */
     public boolean leftLaneDetect(Vehicle... secondQuery) throws Error {
+        //tc0: variables added to create leftLaneDetect.
         double[] readings = {backSideRadar.read(), frontSideRadar.read()};
         int[] lidars = lidar.read();
 
@@ -85,6 +86,7 @@ public class Vehicle {
 
         }
 
+        //Queries needed for tc1_leftlaneDetect to determine if 2 or more sensors are working.
         double obstacle_distance = 5;
         int angle = 45;
         // Query 1.
