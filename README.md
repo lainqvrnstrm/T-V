@@ -1,2 +1,2 @@
 # T-V
-Test and verification assignments
+T-V assignments
