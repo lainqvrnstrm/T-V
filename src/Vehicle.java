@@ -5,7 +5,6 @@ public class Vehicle {
     public Radar frontRadar;
     private Lidar lidar;
 
-
     public Vehicle() {
         gyro = new Gyro();
         backSideRadar = new Radar();
@@ -55,12 +54,12 @@ public class Vehicle {
     public boolean leftLaneDetect(Vehicle... secondQuery) throws Error {
         double[] readings = {backSideRadar.read(), frontSideRadar.read()};
 
-        double[] secondreadings = {0,0};
-        if (secondQuery[0] != null) {
-            secondreadings[0] = secondQuery[0].backSideRadar.read();
-            secondreadings[1] = secondQuery[0].frontSideRadar.read();
+        double[] readingsSecondQuery = {0,0};
+        if (secondQuery.length != 0) {
+            readingsSecondQuery[0] = secondQuery[0].backSideRadar.read();
+            readingsSecondQuery[1] = secondQuery[0].frontSideRadar.read();
         } else {
-            secondreadings = readings;
+            readingsSecondQuery = readings;
         }
 
         double faultrange = 0.5;
@@ -69,7 +68,7 @@ public class Vehicle {
         // A half meter of different values is indicated as faulty readings.
         /*
         if(readings[0] > readings[1] +faultrange || readings[0] < readings[1] -faultrange){
-            if(secondQuery[0] > secondreadings +faultrange || secondQuery[0] < secondQuery[1] -faultrange) {
+            if(secondQuery[0] > readingsSecondQuery +faultrange || secondQuery[0] < secondQuery[1] -faultrange) {
                 throw new Error("do not move");
             }
         }
