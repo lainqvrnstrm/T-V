@@ -35,10 +35,10 @@ public class Vehicle {
         double road_distance = 100;
         if(gyro.longitude <= road_distance-move_distance ){
 
-            // Increments the longitude of the gyro to simulate moving forward.
+            // tc0: Increments the longitude of the gyro to simulate moving forward.
             this.gyro.longitude += (int) move_distance;
 
-            // Returns true because incrementing the longitude moves the car. Returning true indicates a change of longitude.
+            // tc0: Returns true because incrementing the longitude moves the car. Returning true indicates a change of longitude.
             return true;
         }
 
