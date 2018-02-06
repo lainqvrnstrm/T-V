@@ -86,25 +86,25 @@ class VehicleTest {
      */
 
     @org.junit.jupiter.api.Test
-    void tc0_leftLaneDetect() throws Error {
+    void tc0_leftLaneDetect() {
+
+        boolean caught = false;
 
         try {
             // Set so that less than 2 sensors are valid readings.
             // This is done by making all radar values invalid, and thus only the lidar is valid.
             vehicle.radars[0].setValues(15, 55);
             vehicle.radars[1].setValues(40, 30);
+
             // Calls the test method and stores the result.
-
-
-            boolean leftLaneIndicator;
-            leftLaneIndicator = vehicle.leftLaneDetect();
-
-            assertTrue(leftLaneIndicator, "The radars readings are not valid");
-
-
+            vehicle.leftLaneDetect();
         }
-        catch(Error e){
 
+        // Catches errors.
+        catch(Error e){
+            caught = true;
+        } finally {
+            assertTrue(caught, "An Error code must be caught.");
         }
     }
     @org.junit.jupiter.api.Test
