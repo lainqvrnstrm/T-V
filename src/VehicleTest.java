@@ -89,11 +89,13 @@ class VehicleTest {
         try {
             // Set so that less than 2 sensors are valid readings.
             // This is done by making all radar values invalid, and thus only the lidar is valid.
-            vehicle.radars[0].setValues(15, 55);
-            vehicle.radars[1].setValues(40, 30); // TODO
+            vehicle.backSideRadar.write(15);
+            vehicle.frontSideRadar.write(40);
 
-            // Calls the test method and stores the result.
-
+            // Make a vehicle clone to fake the second query readings.
+            Vehicle vehicle_copy = vehicle;
+            vehicle_copy.backSideRadar.write(55);
+            vehicle_copy.frontSideRadar.write(30);
 
             boolean leftLaneIndicator;
             leftLaneIndicator = vehicle.leftLaneDetect();
@@ -148,9 +150,15 @@ class VehicleTest {
     void tc0_changeLane() {
         // Set so that less than 2 sensors are valid readings.
         // This is done by making all radar values invalid, and thus only the lidar is valid.
-        vehicle.radars[0].setValues(15, 55);
-        vehicle.radars[1].setValues(40, 30);
-        vehicle.radars[2].setValues(1, 3); // TODO
+        vehicle.backSideRadar.write(15);
+        vehicle.frontSideRadar.write(40);
+        vehicle.frontRadar.write(1);
+
+        // Make a vehicle clone to fake the second query readings.
+        Vehicle vehicle_copy = vehicle;
+        vehicle_copy.backSideRadar.write(55);
+        vehicle_copy.frontSideRadar.write(30);
+        vehicle_copy.frontRadar.write(3);
 
         // We are not able to move forward, because the end of road will be detected.
         // Because the radar values are invalid moving forward will be invalidated using two different methods
@@ -159,7 +167,7 @@ class VehicleTest {
         vehicle.gyro.longitude = gyro_value;
 
         // Calls the test method and stores the result.
-        boolean changeLaneIndicator = vehicle.changeLane();
+        boolean changeLaneIndicator = vehicle.changeLane(vehicle_copy);
 
         // Assert that we did not change lane.
         assertFalse(changeLaneIndicator,
@@ -241,15 +249,20 @@ class VehicleTest {
     @org.junit.jupiter.api.Test
     void tc3_changeLane() {
         // Set it so that less than two sensors are functioning.
-        vehicle.radars[0].setValues(45, 5);
-        vehicle.radars[1].setValues(4, 45); // TODO
+        vehicle.backSideRadar.write(45);
+        vehicle.frontSideRadar.write(5);
+
+        // Make a vehicle clone to fake the second query readings.
+        Vehicle vehicle_copy = vehicle;
+        vehicle_copy.backSideRadar.write(5);
+        vehicle_copy.frontSideRadar.write(45);
 
         // The car will be able to move forward, because we are in the middle of the road.
         int gyro_value = 50;
         vehicle.gyro.longitude = gyro_value;
 
         // Calls the test method and stores the result.
-        boolean changeLaneIndicator = vehicle.changeLane();
+        boolean changeLaneIndicator = vehicle.changeLane(vehicle_copy);
         
         // Assert that we did not change lane, because incorrect sensor readings.
         assertFalse(changeLaneIndicator,

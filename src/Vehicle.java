@@ -95,13 +95,13 @@ public class Vehicle {
      *
      * @return whether or not the car has changed lane.
      */
-    public boolean changeLane() {
+    public boolean changeLane(Vehicle... secondQuery) {
 
         // tc0: Catches invalid leftLaneDetradar.getValue1()ect errors.
         try {
 
             // tc1: If we can change lane.
-            if (!leftLaneDetect() && gyro.longitude <= 95) {
+            if (!leftLaneDetect(secondQuery) && gyro.longitude <= 95) {
 
                 // tc1: Changes the lane to the left.
                 gyro.latitude += 1;
