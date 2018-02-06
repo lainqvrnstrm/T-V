@@ -35,10 +35,10 @@ public class Vehicle {
         double road_distance = 100;
         if(gyro.longitude <= road_distance-move_distance ){
 
-            // Increments the longitude of the gyro to simulate moving forward.
+            // tc0: Increments the longitude of the gyro to simulate moving forward.
             this.gyro.longitude += (int) move_distance;
 
-            // Returns true because incrementing the longitude moves the car. Returning true indicates a change of longitude.
+            // tc0: Returns true because incrementing the longitude moves the car. Returning true indicates a change of longitude.
             return true;
         }
 
@@ -86,30 +86,30 @@ public class Vehicle {
      */
     public boolean changeLane() {
 
-        // Catches invalid leftLaneDetect errors.
+        // tc0: Catches invalid leftLaneDetect errors.
         try {
 
-            // If we can change lane.
+            // tc1: If we can change lane.
             if (!leftLaneDetect() && gyro.longitude <= 95) {
 
-                // Changes the lane to the left.
+                // tc1: Changes the lane to the left.
                 gyro.latitude += 1;
 
-                // Return a successful change lane.
+                // tc1: Return a successful change lane.
                 return true;
             }
 
-            // Less than two working sensors will receive an error.
+            // tc0: Less than two working sensors will receive an error.
         } catch (Error error) {
-            // Is alright, don't worry about it.
+            // tc0: No action is intended.
         } finally {
 
-            // Moves the car forward if possible after changing the lane.
-            // This is not dependent on whether we changed lane or not.
+            // tc3: Moves the car forward if possible after changing the lane.
+            // tc3: This is not dependent on whether we changed lane or not.
             moveForward();
         }
 
-        // Catches all sad paths which do not return true.
+        // tc2: Catches all sad paths, i.e: tc0, tc2, tc3, tc4.
         return false;
     }
 

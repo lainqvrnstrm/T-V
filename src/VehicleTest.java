@@ -86,14 +86,20 @@ class VehicleTest {
      */
 
     @org.junit.jupiter.api.Test
+
     // TC0 for leftLaneDetect, The radars readings are not valid.
     void tc0_leftLaneDetect() throws Error {
+
+
+        boolean caught = false;
+
 
         try {
             // Set so that less than 2 sensors are valid readings.
             // This is done by making all radar values invalid, and thus only the lidar is valid.
             vehicle.radars[0].setValues(15, 55);
             vehicle.radars[1].setValues(40, 30);
+
             // Calls the test method and stores the result.
 
 
@@ -103,8 +109,14 @@ class VehicleTest {
             assertTrue(leftLaneIndicator, "The radars readings are not valid");
             
         }
+
+
+        // Catches errors.
         catch(Error e){
-            System.out.println("\nThe sensors are not reading the valid values");
+            caught = true;
+        } finally {
+            assertTrue(caught, "An Error code must be caught.");
+
         }
     }
     @org.junit.jupiter.api.Test
@@ -366,11 +378,14 @@ class VehicleTest {
     @org.junit.jupiter.api.Test
     void tc3_whereIs(){
         Gyro testGyro; //Setup a test Gyro
+        //Sets radar values so that we can use changeLane().
+        vehicle.radars[0].setValues(15, 15);
+        vehicle.radars[1].setValues(15, 15);
         //Sets values to the vehicle gyro that we can fetch.
         vehicle.gyro.longitude = 45;
-        vehicle.gyro.latitude = 2; //Should be in the left-most lane.
+        vehicle.gyro.latitude = 1; //Should be in the left-most lane.
         //Move forward to the expected position
-        vehicle.moveForward();
+        vehicle.changeLane();
         //Fetch the vehicle gyro values using whereIs().
         testGyro = vehicle.whereIs();
 
