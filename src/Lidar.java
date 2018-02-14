@@ -28,7 +28,6 @@ public class Lidar {
         catch(Exception e){
 
         }
-
     }
 
     /**
