@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class VehicleTest {
-    private Vehicle vehicle = new Vehicle(); // would always be the same though
+    private Vehicle vehicle; // would always be the same though
 
     @BeforeEach
     void setUp() {
@@ -457,5 +457,71 @@ class VehicleTest {
         //Test if the vehicle is said to be in the correct position.
         assertEquals(testGyro.longitude, 100, "Should be at the end of the street.");
         assertEquals(testGyro.latitude, 2, "Should be in the left-most lane.");
+    }
+
+    /**
+     * The vehicle's longitude position remains the same if there is an obstacle detected in front of it.
+     */
+    @org.junit.jupiter.api.Test
+    void tc0_driveForward(){
+
+        // Vehicle at the start position
+        vehicle.gyro.longitude = 0;
+        vehicle.gyro.latitude = 0;
+
+        // Use the actuator's driveForward method to move the car forward
+        vehicle.actuator.driveForward(true, vehicle.gyro);
+
+        assertEquals(0, vehicle.gyro.longitude, "This should be 5 meters into the street.");
+        assertEquals(0, vehicle.gyro.latitude, "This should be the starting lane.");
+    }
+    /**
+     * The vehicle's longitude position is updated if there is no obstacle detected in front of it.
+     */
+    @org.junit.jupiter.api.Test
+    void tc1_driveForward(){
+
+        // Vehicle at the start position
+        vehicle.gyro.longitude = 0;
+        vehicle.gyro.latitude = 0;
+
+        // Use the actuator's driveForward method to move the car forward
+        vehicle.actuator.driveForward(false, vehicle.gyro);
+
+        assertEquals(5, vehicle.gyro.longitude, "This should be 0 meters into the street.");
+        assertEquals(0, vehicle.gyro.latitude, "This should be the starting lane.");
+    }
+
+    /**
+     * The vehicle's longitude and latitude position remains the same if there is no obstacle detected to the left of it.
+     */
+    @org.junit.jupiter.api.Test
+    void tc0_changeLeft(){
+        // Vehicle at the start position
+        vehicle.gyro.longitude = 0;
+        vehicle.gyro.latitude = 0;
+
+        // Use the actuator's driveForward method to move the car forward
+        vehicle.actuator.changeLeft(true, vehicle.gyro);
+
+        assertEquals(0, vehicle.gyro.longitude, "This should be 0 meters into the street.");
+        assertEquals(0, vehicle.gyro.latitude, "This should be the starting lane.");
+
+    }
+
+    /**
+     * The vehicle's longitude and latitude position is updated if there is no obstacle detected to the left of it.
+     */
+    @org.junit.jupiter.api.Test
+    void tc1_changeLeft(){
+        // Vehicle at the start position
+        vehicle.gyro.longitude = 0;
+        vehicle.gyro.latitude = 0;
+
+        // Use the actuator's driveForward method to move the car forward
+        vehicle.actuator.changeLeft(false, vehicle.gyro);
+
+        assertEquals(5, vehicle.gyro.longitude, "This should be 5 meters into the street.");
+        assertEquals(1, vehicle.gyro.latitude, "This should be lane nr 1.");
     }
 }

@@ -7,6 +7,7 @@ public class Vehicle { //tc0_moveForward()
     public Radar frontSideRadar;
     public Radar frontRadar;
     public Lidar lidar;
+    public Actuator actuator; // Added for tc0_driveForward.
 
     public Vehicle() { //tc0_moveForward()
         gyro = new Gyro();
@@ -14,6 +15,7 @@ public class Vehicle { //tc0_moveForward()
         frontSideRadar = new Radar();
         frontRadar = new Radar();
         lidar = new Lidar();
+        actuator = new Actuator(); // Added for tc0_driveForward.
     }
 
     /**
