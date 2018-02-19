@@ -7,6 +7,7 @@ public class Vehicle { //tc0_moveForward()
     public Radar frontSideRadar;
     public Radar frontRadar;
     public Lidar lidar;
+    public int speed = 5;
 
     public Vehicle() { //tc0_moveForward()
         gyro = new Gyro();
@@ -32,7 +33,7 @@ public class Vehicle { //tc0_moveForward()
         }
 
         // If the sensor readings are less than the move distance, we do not move.
-        double move_distance = 5.0;
+        double move_distance = speed;
         if (reading <= move_distance) { //Added for tc2.
             return false;
         }
@@ -87,7 +88,7 @@ public class Vehicle { //tc0_moveForward()
         }
 
         //Queries needed for tc1_leftlaneDetect to determine if 2 or more sensors are working.
-        double obstacle_distance = 5;
+        double obstacle_distance = speed;
         int angle = 45;
         // Query 1.
         if (readings[0] < obstacle_distance ||
