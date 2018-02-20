@@ -27,28 +27,37 @@ public class UserInterface {
         System.out.println("Commands:\nmove -> MoveForward\nchange -> ChangeLane\n");
 
         while (true) {
+            Vehicle car = vehicles.get(0);
+            // Emulates sensor readings.
+            vehicles = updateReadings(vehicles);
+
             // get the age as an int
             String command = scanner.nextLine();
             System.out.println();
+            boolean result;
 
             switch (command) {
                 case "move":
-                    vehicles.get(0).moveForward();
+                    result = car.moveForward();
                     break;
                 case "change":
-                    vehicles.get(0).changeLane();
+                    result = car.changeLane();
                     break;
                 default:
                     continue;
             }
 
+            System.out.println("Method output: " + result);
+            System.out.println("Sensor readings: " +
+                    car.backSideRadar + "," +
+                    car.frontSideRadar + "," +
+                    car.frontSideRadar);
 
             // Move all the other cars forward.
             for (int i = 1; i < vehicles.size(); i++) {
                 vehicles.get(i).moveForward();
             }
             render(vehicles);
-            updateReadings(vehicles);
         }
     }
 
@@ -91,7 +100,7 @@ public class UserInterface {
         System.out.println();
     }
 
-    static void updateReadings(ArrayList<Vehicle> vehicles) {
+    static ArrayList<Vehicle> updateReadings(ArrayList<Vehicle> vehicles) {
         int map[][] = new int[4][101];
 
         for (int i = 0; i < 4; i++)
@@ -111,9 +120,11 @@ public class UserInterface {
             vehicle.frontRadar.write(50);
             vehicle.backSideRadar.write(10);
             vehicle.frontSideRadar.write(10);
+            vehicle.lidar.writeIndex(45, 11);
 
             // Front detecting radar.
-            for (int i = vehicle.gyro.longitude+4; i < 101; i++) {
+            for (int i = vehicle.gyro.longitude+4;
+                 i < (vehicle.gyro.longitude+10 > 100 ?100:vehicle.gyro.longitude+10); i++) {
                 if (map[vehicle.gyro.latitude][i] == 1) {
                     vehicle.frontRadar.write(i-vehicle.gyro.longitude);
                     break;
@@ -123,13 +134,11 @@ public class UserInterface {
             if (map[vehicle.gyro.latitude +1][vehicle.gyro.longitude] == 1) {
                 vehicle.backSideRadar.write(4);
                 vehicle.frontSideRadar.write(4);
+                vehicle.lidar.writeIndex(45, 5);
             }
 
-            System.out.println("Frontradar: " + vehicle.frontRadar.read());
-            System.out.println("backSide: " + vehicle.backSideRadar.read());
-            System.out.println("FrontSide: " + vehicle.frontSideRadar.read());
-
-
         }
+
+        return vehicles;
     }
 }
