@@ -44,7 +44,8 @@ public class Vehicle { //tc0_moveForward()
         if(gyro.longitude <= road_distance-move_distance){ //Added for tc0.
 
             // tc0: Increments the longitude of the gyro to simulate moving forward.
-            this.gyro.longitude += (int) move_distance; //Added for tc0.
+            actuator.driveForward(!(gyro.longitude <= road_distance-move_distance), gyro);
+            //this.gyro.longitude += (int) move_distance; //Added for tc0.
 
             // tc0: Returns true because incrementing the longitude moves the car. Returning true indicates a change of longitude.
             return true;
@@ -122,7 +123,7 @@ public class Vehicle { //tc0_moveForward()
             if (!leftLaneDetect(secondQuery) && gyro.longitude <= 95) {
 
                 // tc1: Changes the lane to the left.
-                gyro.latitude += 1;
+                actuator.changeLeft(leftLaneDetect(secondQuery) && gyro.longitude <= 95, gyro);
 
                 // tc1: Return a successful change lane.
                 return true;
