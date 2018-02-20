@@ -5,13 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -25,19 +22,37 @@ class VehicleMockito {
     @Rule
     public MockitoRule rule = MockitoJUnit.rule();
 
-    @Mock
-    Vehicle vehicle;
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(VehicleMockito.class);
-        // Initializes a new vehicle object, to be used on all test cases.
-        vehicle = mock(Vehicle.class);
     }
 
+    /**
+     * Scenario 2
+     * Move forward followed by attempt to change lane, which will fail.
+     * Followed by move forward commands until the end of the road.
+     */
     @Test
-    void scenario_name_and_purpose1() {
-        when(vehicle.moveForward()).thenReturn(true, true, true);
+    void scenario_2() {
+        Vehicle vehicle = mock(Vehicle.class);
+
+        when(vehicle.moveForward()).thenReturn(true);
+        when(vehicle.changeLane()).thenReturn(false);
+
+        assertTrue(vehicle.moveForward(), "The Vehicle is suppose to move.");
+        assertFalse(vehicle.changeLane(), "The car is not suppose to change lane.");
+
+        for (int i = 0; i < 18; i++){
+            when(vehicle.moveForward()).thenReturn(true);
+            assertTrue(vehicle.moveForward(), "The Vehicle is suppose to move.");
+        }
+
+        verify(vehicle, times(19)).moveForward();
+
+        when(vehicle.moveForward()).thenReturn(false);
+
+        assertFalse(vehicle.moveForward(),
+                "The Vehicle is suppose to not move anymore.");
     }
 
     @Test
