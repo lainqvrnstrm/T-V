@@ -94,7 +94,6 @@ class VehicleMockito {
 
     }
 
-
     /*
         Method for testing Scenario 3.
         Sensors are broken and car cannot change lane, thus going forward until the end.
