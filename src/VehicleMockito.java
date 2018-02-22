@@ -36,31 +36,30 @@ class VehicleMockito {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(VehicleMockito.class);
+        vehicle = mock(Vehicle.class);
     }
 
-    /**
-     * Scenario 2
+    /*
+     * Scenario 1
      * Move forward followed by attempt to change lane, which will fail.
      * Followed by move forward commands until the end of the road.
      */
     @Test
     void scenario1_changeLane() {
-        //Vehicle vehicle1 = mock(Vehicle.class);
+        Vehicle vehicle = new Vehicle();
 
-        when(vehicle.moveForward()).thenReturn(true);
+        //Start by moving forward.
         vehicle.moveForward();
 
-
-        //Vehicle should change lane
-        when(vehicle.changeLane()).thenReturn(true);
-
-        //Vehicle changes lane
+        //Vehicle changes lane and move forward.
         vehicle.changeLane();
 
-        assertEquals(vehicle.gyro.getLatitude(), 1);
+        //Vehicle should have changed lane.
+        verify(testGyro, times(1)).getLatitude();
         
-
+        //Expected number of runs.
         int runs = 17;
+
         //Vehicle moves until the end of the street
         for (int i = 5; i < 85; i += 5) { //Increment by 5 since we are moving 5 meters every time.
             when(vehicle.moveForward()).thenReturn(true);
@@ -77,7 +76,7 @@ class VehicleMockito {
     void scenario_2() {
         //Vehicle vehicle  = new Vehicle(testGyro, new Radar(), new Radar(), new Radar(), testLidar, testActuator);
         //testFrontRadar.write(10); // Set so no obstacle is in front of the car.
-        doReturn(true).when(vehicle).moveForward();
+        when(vehicle.moveForward()).thenReturn(true);
         verify(testActuator).driveForward(false, vehicle.gyro);
 
         // Attempt to change lane, which should fail due to the values being set.
@@ -106,7 +105,6 @@ class VehicleMockito {
         //Sensors are broken and an error is thrown
         when(vehicle.changeLane()).thenThrow(new Error());
 
-
         //Tries to change lane, error is catched.
         try{
             vehicle.changeLane();
@@ -115,7 +113,6 @@ class VehicleMockito {
         }catch(Error error){
             //Works
         }
-
 
         //Vehicle moves until the end of the street
         for(int i = 5; i<95; i+=5 ) { //Increment by 5 since
