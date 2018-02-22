@@ -33,6 +33,7 @@ class VehicleMockito {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(VehicleMockito.class);
+        vehicle = mock(Vehicle.class);
     }
 
     /**
@@ -46,25 +47,28 @@ class VehicleMockito {
         testGyro.latitude = 1;
 
         when(vehicle.moveForward()).thenReturn(true);
-        assertEquals(vehicle.moveForward(), true, "Vehicle moves forward");
+        vehicle.moveForward();
+
 
         //Vehicle changes lane
         when(vehicle.changeLane()).thenReturn(true);
-        assertEquals(vehicle.changeLane(), true);
+
 
         when(vehicle.whereIs()).thenReturn(testGyro);
-        assertEquals(vehicle.whereIs().latitude, 1, "Vehicle should be in the middle lane");
 
-        int runs = 16;
+
+        int runs = 17;
         //Vehicle moves until the end of the street
-        for(int i = 5; i<85; i+=5 ) { //Increment by 5 since we are moving 5 meters every time.
+        for (int i = 5; i < 85; i += 5) { //Increment by 5 since we are moving 5 meters every time.
             when(vehicle.moveForward()).thenReturn(true);
-            assertEquals(vehicle.moveForward(), true, "Vehicle moves forward");
+            vehicle.moveForward();
         }
-        verify(vehicle, times(runs +1)).moveForward();
+        verify(vehicle, times(runs)).moveForward();
 
         when(vehicle.moveForward()).thenReturn(false);
-        assertEquals(vehicle.moveForward(), false, "Vehicle should not move further");
+
+
+    }
 
     void scenario_2() {
         Vehicle vehicle = mock(Vehicle.class);
@@ -87,6 +91,7 @@ class VehicleMockito {
         assertFalse(vehicle.moveForward(),
                 "The Vehicle is suppose to not move anymore.");
     }
+
 
     @Test
     void scenario_name_and_purpose2() {
@@ -131,6 +136,14 @@ class VehicleMockito {
 
     @Test
     void scenario_name_and_purpose4() {
+
+    }
+
+    /*
+     *Testing scenario 5.
+     */
+    @Test
+    void scenario_name_and_purpose5(){
 
     }
 
