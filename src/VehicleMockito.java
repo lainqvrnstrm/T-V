@@ -126,10 +126,42 @@ class VehicleMockito {
         when(vehicle.moveForward()).thenReturn(false);
 
     }
-
+     /*
+    Method for testing Scenario 4
+    Car tries to change lane, the first query detects an obstacle and the second query broke.
+    So the car moves forward till the end of the street
+    */
     @Test
-    void scenario_name_and_purpose4() {
+    void scenario_4_failedSensor() {
+        //The car moves forward
+        when(vehicle.moveForward()).thenReturn(true);
+        vehicle.moveForward();
+
+        //The car tries to change lane by calling leftLaneDetect()
+        // there is something detected.
+
+        when(vehicle.leftLaneDetect()).thenReturn(true);
+        assertEquals(vehicle.changeLane(), true);
+
+        //When car wants to change lane, the second query returns error code showing sensors are broken
+        when(vehicle.changeLane()).thenThrow(new Error());
+        try{
+            vehicle.changeLane();
+            fail("Something is broken");
+
+        }catch(Error error){
+
+        }
+
+        //The car moves till the end of the street
+        for(int i = vehicle.gyro.longitude; i<95; i+=5 ) { //Increment by 5 since
+            when(vehicle.moveForward()).thenReturn(true);
+            vehicle.moveForward();
+        }
+        verify(vehicle, times(19)).moveForward();
+
+        //Vehicle has met an obstruction
+        when(vehicle.moveForward()).thenReturn(false);
 
     }
-
 }
