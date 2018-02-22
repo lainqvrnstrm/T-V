@@ -57,14 +57,15 @@ class VehicleMockito {
 
         int runs = 16;
         //Vehicle moves until the end of the street
-        for(int i = 5; i<85; i+=5 ) { //Increment by 5 since we are moving 5 meters every time.
+        for (int i = 5; i < 85; i += 5) { //Increment by 5 since we are moving 5 meters every time.
             when(vehicle.moveForward()).thenReturn(true);
             assertEquals(vehicle.moveForward(), true, "Vehicle moves forward");
         }
-        verify(vehicle, times(runs +1)).moveForward();
+        verify(vehicle, times(runs + 1)).moveForward();
 
         when(vehicle.moveForward()).thenReturn(false);
         assertEquals(vehicle.moveForward(), false, "Vehicle should not move further");
+    }
 
     void scenario_2() {
         Vehicle vehicle = mock(Vehicle.class);

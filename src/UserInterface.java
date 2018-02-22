@@ -24,7 +24,7 @@ public class UserInterface {
             render(vehicles);
         }
 
-        System.out.println("Commands:\nmove -> MoveForward\nchange -> ChangeLane\n");
+        System.out.println("Commands:\nmove -> MoveForward\nchange -> ChangeLane\nprint -> Print sensor data");
 
         while (true) {
             Vehicle car = vehicles.get(0);
@@ -43,15 +43,15 @@ public class UserInterface {
                 case "change":
                     result = car.changeLane();
                     break;
+                case "quit":
+                    System.exit(0);
+                case "print":
+                    print(vehicles);
                 default:
                     continue;
             }
 
             System.out.println("Method output: " + result);
-            System.out.println("Sensor readings: " +
-                    car.backSideRadar + "," +
-                    car.frontSideRadar + "," +
-                    car.frontSideRadar);
 
             // Move all the other cars forward.
             for (int i = 1; i < vehicles.size(); i++) {
@@ -61,17 +61,28 @@ public class UserInterface {
         }
     }
 
+    static void print(ArrayList<Vehicle> vehicles) {
+        int i = 0;
+        for (Vehicle vehicle: vehicles) {
+            System.out.println("Car #" + i++
+                            + "\nBackSideRadar: " + vehicle.backSideRadar.read()
+                            + "\nFrontSideRadar: " + vehicle.frontSideRadar.read()
+                            + "\nFrontRadar: " + vehicle.frontRadar.read()
+            );
+        }
+    }
+
     static void render(ArrayList<Vehicle> vehicles) {
         int lanes = 3, range = 20;
         int map[][] = new int[lanes][range+1];
 
         for (Vehicle vehicle: vehicles) {
             Gyro gyro = vehicle.gyro;
-            map[gyro.latitude][gyro.longitude/(100/range)]++;
+            map[gyro.latitude][gyro.longitude/(101/range)]++;
         }
 
         for (int i = 0; i < range; i++) {
-            System.out.print("####");
+            System.out.print("######");
         }
         System.out.println();
 
@@ -94,7 +105,7 @@ public class UserInterface {
         }
 
         for (int i = 0; i < range; i++) {
-            System.out.print("####");
+            System.out.print("######");
         }
 
         System.out.println();
@@ -131,12 +142,18 @@ public class UserInterface {
                 }
             }
 
-            if (map[vehicle.gyro.latitude +1][vehicle.gyro.longitude] == 1) {
-                vehicle.backSideRadar.write(4);
-                vehicle.frontSideRadar.write(4);
-                vehicle.lidar.writeIndex(45, 5);
-            }
+            for (int i = 0; i < 3; i++) { // Sets side radars.
 
+                if (map[vehicle.gyro.latitude +1][(vehicle.gyro.longitude -i) < 0 ? 0: vehicle.gyro.longitude -i] == 1) {
+                    vehicle.backSideRadar.write(4);
+                    vehicle.lidar.writeIndex(45, 5);
+                }
+
+                if (map[vehicle.gyro.latitude +1][(vehicle.gyro.longitude +i) > 100?100:vehicle.gyro.longitude +i] == 1) {
+                    vehicle.frontSideRadar.write(4);
+                    vehicle.lidar.writeIndex(45, 5);
+                }
+            }
         }
 
         return vehicles;
