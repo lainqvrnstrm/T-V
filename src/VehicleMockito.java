@@ -41,6 +41,7 @@ class VehicleMockito {
     @BeforeEach
     void setUp_vehicle() {
         vehicle = mock(Vehicle.class);
+        vehicle.actuator = mock(Actuator.class);
     }
 
     /**
@@ -77,16 +78,7 @@ class VehicleMockito {
 
     @Test
     void scenario_2() {
-        //Vehicle vehicle  = new Vehicle(testGyro, new Radar(), new Radar(), new Radar(), testLidar, testActuator);
-        //testFrontRadar.write(10); // Set so no obstacle is in front of the car.
-        doReturn(true).when(vehicle).moveForward();
-        verify(testActuator).driveForward(false, vehicle.gyro);
 
-        // Attempt to change lane, which should fail due to the values being set.
-        //vehicle.backSideRadar.write(4);
-        //vehicle.frontSideRadar.write(4);
-        //when(vehicle.changeLane()).thenReturn(false);
-        //verify(testActuator).changeLeft(true, testGyro);
     }
 
     @Test
