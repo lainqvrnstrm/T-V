@@ -19,6 +19,15 @@ public class Vehicle { //tc0_moveForward()
         actuator = new Actuator(); // Added for tc0_driveForward.
     }
 
+    public Vehicle(Gyro gyro, Radar backSideRadar, Radar frontSideRadar, Radar frontRadar, Lidar lidar, Actuator actuator) { //tc0_moveForward()
+        this.gyro = gyro;
+        this.backSideRadar = backSideRadar;
+        this.frontSideRadar = frontSideRadar;
+        this.frontRadar = frontRadar;
+        this.lidar = lidar;
+        this.actuator = actuator; // Added for tc0_driveForward.
+    }
+
     /**
      * Moves the car 5 meters forward in the longitude position.
      * @return If the car's position has changed or not.

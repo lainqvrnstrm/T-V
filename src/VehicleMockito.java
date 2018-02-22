@@ -25,8 +25,11 @@ class VehicleMockito {
     @Rule public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock private Gyro testGyro = mock(Gyro.class);
-    @Mock private Radar testRadar = mock(Radar.class);
+    @Mock private Radar testBackSideRadar = mock(Radar.class);
+    @Mock private Radar testFrontSideRadar = mock(Radar.class);
+    @Mock private Radar testFrontRadar = mock(Radar.class);
     @Mock private Lidar testLidar = mock(Lidar.class);
+    @Mock private Actuator testActuator = mock(Actuator.class);
 
     @InjectMocks private Vehicle vehicle;
 
@@ -67,26 +70,13 @@ class VehicleMockito {
         assertEquals(vehicle.moveForward(), false, "Vehicle should not move further");
     }
 
+    @Test
     void scenario_2() {
-        Vehicle vehicle = mock(Vehicle.class);
-
-        when(vehicle.moveForward()).thenReturn(true);
-        when(vehicle.changeLane()).thenReturn(false);
-
-        assertTrue(vehicle.moveForward(), "The Vehicle is suppose to move.");
-        assertFalse(vehicle.changeLane(), "The car is not suppose to change lane.");
-
-        for (int i = 0; i < 18; i++){
-            when(vehicle.moveForward()).thenReturn(true);
-            assertTrue(vehicle.moveForward(), "The Vehicle is suppose to move.");
-        }
-
-        verify(vehicle, times(19)).moveForward();
-
-        when(vehicle.moveForward()).thenReturn(false);
-
-        assertFalse(vehicle.moveForward(),
-                "The Vehicle is suppose to not move anymore.");
+        Vehicle vehicle  = new Vehicle(new Gyro(), testBackSideRadar, testFrontSideRadar, new Radar(), testLidar, testActuator);
+        testFrontRadar.write(10); // Set so no obstacle is in front of the car.
+        boolean should_be_true = vehicle.moveForward();
+        assertTrue(should_be_true, "The car should move forward from the initial position.");
+        verify(testActuator).driveForward(false, vehicle.gyro);
     }
 
     @Test
