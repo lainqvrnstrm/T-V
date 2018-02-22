@@ -37,6 +37,7 @@ class VehicleMockito {
     void setUp() {
         MockitoAnnotations.initMocks(VehicleMockito.class);
         vehicle = mock(Vehicle.class);
+        vehicle.actuator = mock(Actuator.class);
     }
 
     /*
@@ -84,6 +85,7 @@ class VehicleMockito {
         //vehicle.frontSideRadar.write(4);
         //when(vehicle.changeLane()).thenReturn(false);
         //verify(testActuator).changeLeft(true, testGyro);
+
     }
 
 
@@ -91,7 +93,6 @@ class VehicleMockito {
     void scenario_name_and_purpose2() {
 
     }
-
 
     /*
         Method for testing Scenario 3.
