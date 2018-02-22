@@ -14,11 +14,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.*;
 
 
-@RunWith(JUnit4.class)
+@RunWith(MockitoJUnitRunner.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class VehicleMockito {
 
@@ -47,18 +48,19 @@ class VehicleMockito {
     @Test
     void scenario1_changeLane() {
         //Vehicle vehicle1 = mock(Vehicle.class);
-        testGyro.latitude = 1;
 
         when(vehicle.moveForward()).thenReturn(true);
         vehicle.moveForward();
 
 
-        //Vehicle changes lane
+        //Vehicle should change lane
         when(vehicle.changeLane()).thenReturn(true);
 
+        //Vehicle changes lane
+        vehicle.changeLane();
 
-        when(vehicle.whereIs()).thenReturn(testGyro);
-
+        assertEquals(vehicle.gyro.getLatitude(), 1);
+        
 
         int runs = 17;
         //Vehicle moves until the end of the street
@@ -120,7 +122,7 @@ class VehicleMockito {
 
 
         //Vehicle moves until the end of the street
-        for(int i = vehicle.gyro.longitude; i<95; i+=5 ) { //Increment by 5 since
+        for(int i = 5; i<95; i+=5 ) { //Increment by 5 since
             when(vehicle.moveForward()).thenReturn(true);
             vehicle.moveForward();
         }
