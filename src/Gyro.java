@@ -7,4 +7,12 @@ public class Gyro {
         longitude = 0;
         latitude = 0;
     }
+
+    public int getLatitude() {
+        return latitude;
+    }
+
+    public int getLongitude() {
+        return longitude;
+    }
 }
