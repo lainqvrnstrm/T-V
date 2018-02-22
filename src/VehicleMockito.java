@@ -25,8 +25,11 @@ class VehicleMockito {
     @Rule public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock private Gyro testGyro = mock(Gyro.class);
-    @Mock private Radar testRadar = mock(Radar.class);
+    @Mock private Radar testBackSideRadar = mock(Radar.class);
+    @Mock private Radar testFrontSideRadar = mock(Radar.class);
+    @Mock private Radar testFrontRadar = mock(Radar.class);
     @Mock private Lidar testLidar = mock(Lidar.class);
+    @Mock private Actuator testActuator = mock(Actuator.class);
 
     @InjectMocks private Vehicle vehicle;
 
@@ -63,33 +66,27 @@ class VehicleMockito {
             when(vehicle.moveForward()).thenReturn(true);
             vehicle.moveForward();
         }
+
         verify(vehicle, times(runs)).moveForward();
 
         when(vehicle.moveForward()).thenReturn(false);
 
-
     }
 
+    @Test
     void scenario_2() {
-        Vehicle vehicle = mock(Vehicle.class);
+        Vehicle vehicle  = new Vehicle(testGyro, testBackSideRadar, testFrontSideRadar, new Radar(), testLidar, testActuator);
+        testFrontRadar.write(10); // Set so no obstacle is in front of the car.
+        boolean should_be_true = vehicle.moveForward();
+        assertTrue(should_be_true, "The car should move forward from the initial position.");
+        verify(testActuator).driveForward(false, vehicle.gyro);
 
-        when(vehicle.moveForward()).thenReturn(true);
-        when(vehicle.changeLane()).thenReturn(false);
-
-        assertTrue(vehicle.moveForward(), "The Vehicle is suppose to move.");
-        assertFalse(vehicle.changeLane(), "The car is not suppose to change lane.");
-
-        for (int i = 0; i < 18; i++){
-            when(vehicle.moveForward()).thenReturn(true);
-            assertTrue(vehicle.moveForward(), "The Vehicle is suppose to move.");
-        }
-
-        verify(vehicle, times(19)).moveForward();
-
-        when(vehicle.moveForward()).thenReturn(false);
-
-        assertFalse(vehicle.moveForward(),
-                "The Vehicle is suppose to not move anymore.");
+        // Attempt to change lane, which should fail due to the values being set.
+        vehicle.backSideRadar.write(4);
+        vehicle.frontSideRadar.write(4);
+        boolean should_be_false = vehicle.changeLane();
+        assertFalse(should_be_false, "There is a car occupying that lane. So you can not change lane.");
+        verify(testGyro).setLatitude(testGyro.getLatitude()+1);
     }
 
 

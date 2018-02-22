@@ -15,4 +15,14 @@ public class Gyro {
     public int getLongitude() {
         return longitude;
     }
+
+    // Added for scenario 2.
+    public void setLongitude(int longitude) {
+        this.longitude = longitude;
+    }
+
+    // Added for scenario 2.
+    public void setLatitude(int latitude) {
+        this.latitude = latitude;
+    }
 }
