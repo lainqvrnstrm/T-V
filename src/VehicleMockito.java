@@ -78,7 +78,7 @@ class VehicleMockito {
 
     @Test
     void scenario_2() {
-
+      
     }
 
     @Test
