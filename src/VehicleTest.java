@@ -220,7 +220,7 @@ class VehicleTest {
 
         // Confirm that the car did move to the correct lane.
         assertEquals(vehicle.gyro.latitude, 0,
-                "The car van not change lane.");
+                "The car can not change lane.");
     }
 
     @org.junit.jupiter.api.Test
@@ -522,7 +522,7 @@ class VehicleTest {
         // Use the actuator's driveForward method to move the car forward
         vehicle.actuator.changeLeft(false, vehicle.gyro);
 
-        assertEquals(5, vehicle.gyro.longitude, "This should be 5 meters into the street.");
+        assertEquals(0, vehicle.gyro.longitude, "This should be 5 meters into the street.");
         assertEquals(1, vehicle.gyro.latitude, "This should be lane nr 1.");
     }
 }
