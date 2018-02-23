@@ -47,6 +47,7 @@ class VehicleMockito {
      */
     @Test
     void scenario1_changeLane() {
+        //Instantiate the vehicle object.
         Vehicle vehicle = new Vehicle();
 
         //Start by moving forward.
@@ -67,8 +68,10 @@ class VehicleMockito {
             vehicle.moveForward();
         }
 
+        //Verify that the method has been envoked the expected number of times.
         verify(vehicle, times(runs)).moveForward();
 
+        //The vehicle will then move forward.
         when(vehicle.moveForward()).thenReturn(false);
 
     }
