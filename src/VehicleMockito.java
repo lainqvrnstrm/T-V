@@ -79,6 +79,7 @@ class VehicleMockito {
     void scenario_2() {
 
         /*
+        Only use as a reference, don't copy paste stuff.
         Follows this structure:
             Set mocked objects return value
             Call controller method
