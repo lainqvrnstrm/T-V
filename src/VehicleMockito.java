@@ -121,10 +121,6 @@ class VehicleMockito {
 
     }
 
-    @Test
-    void scenario_name_and_purpose2() {
-
-    }
 
     /*
         Method for testing Scenario 3.
@@ -196,6 +192,11 @@ class VehicleMockito {
 
         //Vehicle has met an obstruction
         when(vehicle.moveForward()).thenReturn(false);
+
+    }
+
+    @Test
+    void scenario5_obstacleDetectedOnce() {
 
     }
 }
