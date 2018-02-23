@@ -23,7 +23,6 @@ class VehicleMockito {
 
     @Rule public MockitoRule rule = MockitoJUnit.rule();
 
-
     @InjectMocks private Vehicle vehicle;
 
     @Mock private Gyro testGyro = mock(Gyro.class);
@@ -78,7 +77,47 @@ class VehicleMockito {
 
     @Test
     void scenario_2() {
-      
+
+        /*
+        Follows this structure:
+            Set mocked objects return value
+            Call controller method
+            Verify that the model got the request to change the data.
+        */
+
+        /*
+        Create a vehicle Object which is the Controller and the mocked objects are the models' which store all the data
+        for it's given state. This enables the use of the Vehicle methods as a controller and to test that the model
+        updates according to the specified function call in the scenario.
+         */
+        Vehicle vehicle  = new Vehicle(testGyro, testBackSideRadar, testFrontSideRadar, testFrontRadar, testLidar, testActuator);
+        /*
+        Sets the return values of all of the sensor readings to match this scenario. In this case it would be to
+        move forward followed by an attempt to change lane then proceeding to the end of the road.
+        To confirm that the vehicle has not moved we use the implemented Actuator class. While the gyro is only checked
+        to confirm the number of continuous stubbing required in the declaration. It is assumed the car to the left
+         */
+        int[] obstacle = new int[360];
+        int[] no_obstacle = new int[360];
+        obstacle[45] = 4;
+
+        when(vehicle.lidar.read()).thenReturn(no_obstacle, obstacle, no_obstacle); // stets no obstacle on the 2nd iteration of the lidar reading.
+        when(vehicle.gyro.getLongitude()).thenReturn(5, 5, 10, 10, 100); // Jumps in distance between 10 and 100 since nothing intresting happens inbetween.
+        when(vehicle.frontRadar.read()).thenReturn(10.0); // Set front radar reading to 10.
+        when(vehicle.frontSideRadar.read()).thenReturn(4.0, 0.0); // side to 4 then 0.
+        when(vehicle.backSideRadar.read()).thenReturn(4.0); // Obstacle detected when read.
+
+        vehicle.moveForward(); // call the controller method to move forward.
+        verify(vehicle.actuator).driveForward(false, vehicle.gyro);
+
+        vehicle.changeLane(); // call the controller method to change lane.
+        verify(vehicle.actuator, never()).changeLeft(false, vehicle.gyro);
+
+        reset(vehicle.actuator); // Reset to check that it won't be called at the end.
+        vehicle.moveForward(); // The car won't be able to move.
+        verify(vehicle.actuator, never()).driveForward(anyBoolean(), anyObject());
+        verify(vehicle.gyro, times(5)).getLongitude();
+
     }
 
     @Test
