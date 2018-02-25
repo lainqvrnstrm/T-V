@@ -40,7 +40,7 @@ class VehicleMockito {
     @BeforeEach
     void setUp_vehicle() {
         vehicle = mock(Vehicle.class);
-        vehicle.actuator = mock(Actuator.class);
+        vehicle.setActuator(mock(Actuator.class));
     }
 
     /**
@@ -51,7 +51,7 @@ class VehicleMockito {
     @Test
     void scenario1_changeLane() {
         //Vehicle vehicle1 = mock(Vehicle.class);
-        testGyro.latitude = 1;
+        testGyro.setLatitude(1);
 
         when(vehicle.moveForward()).thenReturn(true);
         assertEquals(vehicle.moveForward(), true, "Vehicle moves forward");
@@ -61,7 +61,7 @@ class VehicleMockito {
         assertEquals(vehicle.changeLane(), true);
 
         when(vehicle.whereIs()).thenReturn(testGyro);
-        assertEquals(vehicle.whereIs().latitude, 1, "Vehicle should be in the middle lane");
+        assertEquals(vehicle.whereIs().getLatitude(), 1, "Vehicle should be in the middle lane");
 
         int runs = 16;
         //Vehicle moves until the end of the street
@@ -102,22 +102,22 @@ class VehicleMockito {
         int[] no_obstacle = new int[360];
         obstacle[45] = 4;
 
-        when(vehicle.lidar.read()).thenReturn(no_obstacle, obstacle, no_obstacle); // stets no obstacle on the 2nd iteration of the lidar reading.
-        when(vehicle.gyro.getLongitude()).thenReturn(5, 5, 10, 10, 100); // Jumps in distance between 10 and 100 since nothing intresting happens inbetween.
-        when(vehicle.frontRadar.read()).thenReturn(10.0); // Set front radar reading to 10.
-        when(vehicle.frontSideRadar.read()).thenReturn(4.0, 0.0); // side to 4 then 0.
-        when(vehicle.backSideRadar.read()).thenReturn(4.0); // Obstacle detected when read.
+        when(vehicle.getLidar().read()).thenReturn(no_obstacle, obstacle, no_obstacle); // stets no obstacle on the 2nd iteration of the lidar reading.
+        when(vehicle.getGyro().getLongitude()).thenReturn(5, 5, 10, 10, 100); // Jumps in distance between 10 and 100 since nothing intresting happens inbetween.
+        when(vehicle.getFrontRadar().read()).thenReturn(10.0); // Set front radar reading to 10.
+        when(vehicle.getFrontSideRadar().read()).thenReturn(4.0, 0.0); // side to 4 then 0.
+        when(vehicle.getBackSideRadar().read()).thenReturn(4.0); // Obstacle detected when read.
 
         vehicle.moveForward(); // call the controller method to move forward.
-        verify(vehicle.actuator).driveForward(false, vehicle.gyro);
+        verify(vehicle.getActuator()).driveForward(false, vehicle.getGyro());
 
         vehicle.changeLane(); // call the controller method to change lane.
-        verify(vehicle.actuator, never()).changeLeft(false, vehicle.gyro);
+        verify(vehicle.getActuator(), never()).changeLeft(false, vehicle.getGyro());
 
-        reset(vehicle.actuator); // Reset to check that it won't be called at the end.
+        reset(vehicle.getActuator()); // Reset to check that it won't be called at the end.
         vehicle.moveForward(); // The car won't be able to move.
-        verify(vehicle.actuator, never()).driveForward(anyBoolean(), anyObject());
-        verify(vehicle.gyro, times(5)).getLongitude();
+        verify(vehicle.getActuator(), never()).driveForward(anyBoolean(), anyObject());
+        verify(vehicle.getGyro(), times(5)).getLongitude();
 
     }
 
@@ -146,7 +146,7 @@ class VehicleMockito {
 
 
         //Vehicle moves until the end of the street
-        for(int i = vehicle.gyro.longitude; i<95; i+=5 ) { //Increment by 5 since
+        for(int i = vehicle.getGyro().getLongitude(); i<95; i+=5 ) { //Increment by 5 since
             when(vehicle.moveForward()).thenReturn(true);
             vehicle.moveForward();
         }
@@ -184,7 +184,7 @@ class VehicleMockito {
         }
 
         //The car moves till the end of the street
-        for(int i = vehicle.gyro.longitude; i<95; i+=5 ) { //Increment by 5 since
+        for(int i = vehicle.getGyro().getLongitude(); i<95; i+=5 ) { //Increment by 5 since
             when(vehicle.moveForward()).thenReturn(true);
             vehicle.moveForward();
         }
