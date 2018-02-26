@@ -1,6 +1,6 @@
 //Class added to satisfy tc0_moveForward(), modified for tc0_whereIs()
 public class Gyro {
-    private int longitude;
+    private int longitude = 4;
     private int latitude;
 
     public int getLatitude() {
