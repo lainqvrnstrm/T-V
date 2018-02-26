@@ -256,8 +256,9 @@ class VehicleMockito {
 
 
         when(testLidar.read()).thenReturn(no_obstacle, leftSide_obstacle);  // 1st query - nothing detected. 2nd - detected.
-        when(testGyro.getLongitude()).thenReturn( 0,5, 10, 100);
-        when(testFrontRadar.read()).thenReturn(50.0);
+        when(testGyro.getLongitude()).thenReturn( 4,9, 14, 19, 24, 29, 34, 39, 44, 49, 54, 59, 64, 69, 74, 79, 84, 89, 99);
+        when(testFrontRadar.read()).thenReturn(50.0,50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, // 10 first calls
+                46.0, 41.0, 36.0, 31.0, 26.0, 21.0, 16.0, 11.0, 6.0 , 1.0); // 10 last calls
         when(testFrontSideRadar.read()).thenReturn(50.0, 3.0);  // 1st query - nothing detected. 2nd - detected.
         when(testBackSideRadar.read()).thenReturn(50.0, 3.0);  // 1st query - nothing detected. 2nd - detected.
 
@@ -267,28 +268,31 @@ class VehicleMockito {
 
         // The vehicle moves forward once without hindrance
         vehicle.moveForward();
-
+        // Verify
         verify(vehicle.getActuator(), times(1)).driveForward(false, vehicle.getGyro(), 5);
         verify(vehicle.getActuator(), never()).driveForward(true, vehicle.getGyro(), 5);
+        reset(vehicle.getActuator());
+        System.out.println("Longitudinal value: " + vehicle.getGyro().getLongitude() + " should be 9");
 
 
         // Vehicle requests to change left by querying the sensors
         vehicle.changeLane();
+        // Verify
         verify(vehicle.getActuator(), times(1)).changeLeft(true, vehicle.getGyro());
         verify(vehicle.getActuator(), never()).changeLeft(false, vehicle.getGyro());
+        verify(vehicle.getActuator(), times(1)).driveForward(false, vehicle.getGyro(), 5);
+        reset(vehicle.getActuator());
+        System.out.println("Longitudinal value: " + vehicle.getGyro().getLongitude() + " should be 16");
 
-        // Vehicle moves to the end of the street and stops when faced with an obstacle
-
-        verify(vehicle.getActuator(), times(19)).driveForward(false, vehicle.getGyro(), 5);
+        // Vehicle moves to the end of the street and stops when faced with the obstacle at the end of the street.
+        for (int i = 16; i < 95; i += 5){
+            vehicle.moveForward();
+            System.out.println(i + " Longitudinal value: " + vehicle.getGyro().getLongitude()  + " should be " +(i + 5));
+        }
+        verify(vehicle.getActuator(), times(15)).driveForward(false, vehicle.getGyro(), 5);
         verify(vehicle.getActuator(), times(1)).driveForward(true, vehicle.getGyro(), 5);
 
-
-
         verifyNoMoreInteractions(vehicle.getActuator());
-
-        reset(vehicle);
-
-
 
     }
 }
