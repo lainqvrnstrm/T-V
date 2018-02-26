@@ -228,14 +228,9 @@ class VehicleMockito {
     @Test
     void scenario5_obstacleDetectedOnce() {
 
-
-
-
-
-        int[] front_obstacle = new int[360];
+        // Lidar readings
         int[] leftSide_obstacle = new int[360];
         int[] no_obstacle = new int[360];
-        front_obstacle[0] = 1;  // Dubbelkolla, så vettiga värden
         leftSide_obstacle[45] = 3;  // Dubbelkolla, så vettiga värden
 
 
@@ -249,7 +244,7 @@ class VehicleMockito {
                 Last move forward   |true
 
          */
-        when(vehicle.getLidar().read()).thenReturn(leftSide_obstacle, no_obstacle, no_obstacle, front_obstacle);
+        when(vehicle.getLidar().read()).thenReturn(leftSide_obstacle, no_obstacle, no_obstacle);
         when(vehicle.getGyro().getLongitude()).thenReturn( 0,5, , 10, 100);
         when(vehicle.getFrontRadar().read()).thenReturn(50.0, 10.0);
         when(vehicle.getFrontSideRadar().read()).thenReturn(4.0, 0.0);
