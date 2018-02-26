@@ -6,44 +6,38 @@ import java.util.Scanner;
  */
 public class UserInterface {
 
+    private static String[] commands = {"move", "change", "wait", "move"};
+
     public static void main(String[] args) {
 
-        // create a scanner so we can read the command-line input
+        // create all the vehicles for the simulation.
+        ArrayList<Vehicle> vehicles = createVehicles();
+        Vehicle car = vehicles.get(0); // The car we are controlling.
+
         Scanner scanner = new Scanner(System.in);
-
-        ArrayList<Vehicle> vehicles = new ArrayList<>();
-
-        System.out.println("Specify number of cars:");
-        int cars = scanner.nextInt();
-
-        System.out.println("Specify lane (0-2) and distance (0-100) and speed (0-100)");
-        for (int i = 0; i < cars; i++) {
-            Vehicle vehicle = new Vehicle();
-            System.out.println("Set Car #" + (i+1) + "'s position and speed");
-            vehicle.getGyro().setLatitude(scanner.nextInt());
-            vehicle.getGyro().setLongitude(scanner.nextInt());
-            vehicle.setSpeed(scanner.nextInt());
-            vehicles.add(vehicle);
-            render(vehicles);
-        }
-
-        System.out.println("Commands:" +
-                "\nmove -> MoveForward" +
-                "\nchange -> ChangeLane" +
-                "\nprint -> Print sensor data" +
-                "\nwait -> perform no action");
+        boolean automated = false;
+        boolean result = false;
+        String command;
 
         while (true) {
-            Vehicle car = vehicles.get(0);
             // Emulates sensor readings.
             vehicles = updateReadings(vehicles);
 
-            // get the age as an int
-            String command = scanner.nextLine();
-            System.out.println();
-            boolean result = false;
+            if (!automated) {
+                command = scanner.nextLine();
+                System.out.println();
+            } else {
+                command = commands[(int)(System.currentTimeMillis() % commands.length)];
+                try {
+                    Thread.sleep(500);
+                }catch (Exception e) {
+                    System.exit(1);
+                }
+            }
 
             switch (command) {
+                case "auto":
+                    automated = true;
                 case "move":
                     result = car.moveForward();
                     break;
@@ -71,6 +65,41 @@ public class UserInterface {
         }
     }
 
+    private static ArrayList<Vehicle> createVehicles() {
+
+        // create a scanner so we can read the command-line input
+        Scanner scanner = new Scanner(System.in);
+
+        ArrayList<Vehicle> vehicles = new ArrayList<>();
+
+        // Vehicle we control.
+        vehicles.add(new Vehicle());
+
+        System.out.println("Specify number of additional cars:");
+        int cars = scanner.nextInt();
+
+        System.out.println("Specify lane (0-2) and distance (0-100) and speed (0-100)");
+        for (int i = 0; i < cars; i++) {
+            Vehicle vehicle = new Vehicle();
+            System.out.println("Set Car #" + (i+1) + "'s position and speed");
+            vehicle.getGyro().setLatitude(scanner.nextInt());
+            vehicle.getGyro().setLongitude(scanner.nextInt());
+            vehicle.setSpeed(scanner.nextInt());
+            vehicles.add(vehicle);
+            render(vehicles);
+        }
+
+        System.out.println("Commands:" +
+                "\nmove -> MoveForward" +
+                "\nchange -> ChangeLane" +
+                "\nprint -> Print sensor data" +
+                "\nwait -> perform no action" +
+                "\nauto -> runs simulation automated"
+        );
+
+        return vehicles;
+    }
+
     private static void print(ArrayList<Vehicle> vehicles) {
         int i = 0;
         for (Vehicle vehicle: vehicles)
@@ -82,15 +111,9 @@ public class UserInterface {
     }
 
     private static void render(ArrayList<Vehicle> vehicles) {
-        int lanes = 3, range = 20;
-        int map[][] = new int[lanes][range+1];
-
-        for (Vehicle vehicle: vehicles) {
-            Gyro gyro = vehicle.getGyro();
-            map[gyro.getLatitude()][gyro.getLongitude()/(101/range)]++;
-        }
-
-        for (int i = 0; i < range; i++) {
+        int lanes = 3, range = 101;
+        int map[][] = generateMap(vehicles);
+        for (int i = 0; i < range/4; i++) {
             System.out.print("||||");
         }
 
@@ -99,22 +122,30 @@ public class UserInterface {
         // Prints out the cars.
         for (int i = lanes-1; i >= 0; i--) {
             for (int j = 0; j < range; j++) {
+
+                if (j >= 100) {
+                    System.out.print("|");
+                    continue;
+                }
+
                 // Only allow one car at one place.
                 switch (map[i][j]) {
                     case 1:
                         System.out.print("ō͡≡o");
+                        j += 3;
                         break;
                     case 2-Integer.MAX_VALUE:
                         System.out.print("Erro");
+                        j += 4;
                         break;
                     default:
-                        System.out.print("----");
+                        System.out.print("-");
                 }
             }
             System.out.println(); // new lane.
         }
 
-        for (int i = 0; i < range; i++) {
+        for (int i = 0; i < range/4; i++) {
             System.out.print("||||");
         }
 
@@ -133,12 +164,9 @@ public class UserInterface {
             vehicle.getLidar().writeIndex(45, 11);
 
             // Front detecting radar.
-            for (int i = vehicle.getGyro().getLongitude()+4;
+            for (int i = vehicle.getGyro().getLongitude()+3;
                  i < (vehicle.getGyro().getLongitude()+10 > 100 ?100:vehicle.getGyro().getLongitude()+10); i++) {
-                if (map[vehicle.getGyro().getLatitude()][i] == 1) {
-                    vehicle.getFrontRadar().write(i-vehicle.getGyro().getLongitude());
-                    break;
-                }
+                vehicle.getFrontRadar().write(i-vehicle.getGyro().getLongitude());
             }
 
             for (int i = 0; i < 3; i++) { // Sets side radars.
@@ -159,17 +187,14 @@ public class UserInterface {
     }
 
     private static int[][] generateMap(ArrayList<Vehicle> vehicles) {
-        int map[][] = new int[4][101];
-
+        int map[][] = new int[4][101]; // Size of map.
         for (int i = 0; i < 4; i++) // Set end of road border.
             map[i][100] = 1;
         for (int i = 0; i < 101; i++) // Set top side border.
             map[3][i] = 1;
-
         for (Vehicle vehicle: vehicles)            // Draws it on a 2d map.
             for (int i = vehicle.getGyro().getLongitude(); i < 100 && i < vehicle.getGyro().getLongitude()+3; i++)
                 map[vehicle.getGyro().getLatitude()][i] = 1;
-
         return map;
     }
 }
