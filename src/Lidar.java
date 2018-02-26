@@ -9,6 +9,12 @@ public class Lidar {
     // Class added for use of the lidar sensor, this to satisfy requirements for tc0_leftLaneDetect as well as following ones.
     private int[] reading = new int[360];
 
+    Lidar(){
+        for (int i = 0; i < reading.length; i++){
+            reading[i] = 50;
+        }
+    }
+
     /**
      * @return the last sensor data stored.
      */
