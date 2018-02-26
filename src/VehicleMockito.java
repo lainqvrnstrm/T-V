@@ -220,8 +220,64 @@ class VehicleMockito {
 
     }
 
+    /**
+     * An obstacle is detected in the first query but not the second, when trying to change to the left lane.
+     * This should result in the vehicle NOT changing lane.
+     */
+
     @Test
     void scenario5_obstacleDetectedOnce() {
+
+
+
+
+
+        int[] front_obstacle = new int[360];
+        int[] leftSide_obstacle = new int[360];
+        int[] no_obstacle = new int[360];
+        front_obstacle[0] = 1;  // Dubbelkolla, så vettiga värden
+        leftSide_obstacle[45] = 3;  // Dubbelkolla, så vettiga värden
+
+
+        /*
+                Step                Obstacle detected
+                ---------------------------------------
+                Move forward        |false
+                Left lane detect    |true
+                Left lane detect    |false
+                Move forward (cont) |false
+                Last move forward   |true
+
+         */
+        when(vehicle.getLidar().read()).thenReturn(leftSide_obstacle, no_obstacle, no_obstacle, front_obstacle);
+        when(vehicle.getGyro().getLongitude()).thenReturn( 0,5, , 10, 100);
+        when(vehicle.getFrontRadar().read()).thenReturn(50.0, 10.0);
+        when(vehicle.getFrontSideRadar().read()).thenReturn(4.0, 0.0);
+        when(vehicle.getBackSideRadar().read()).thenReturn(4.0);
+
+        // The vehicle starts at the beginning of the street. The sensors are set to their default value, which means they are initially not detecting anything.
+        Vehicle vehicle  = new Vehicle(testGyro, testBackSideRadar, testFrontSideRadar, testFrontRadar, testLidar, testActuator);
+
+        // The vehicle moves forward once without hindrance
+        vehicle.moveForward();
+        verify(vehicle.getActuator(), times(1)).driveForward(false, vehicle.getGyro());
+        verify(vehicle.getActuator(), never()).driveForward(true, vehicle.getGyro());
+
+        // Vehicle requests to change left by querying the sensors
+        vehicle.changeLane();
+        verify(vehicle.getActuator(), times(1)).changeLeft(true, vehicle.getGyro());
+        verify(vehicle.getActuator(), never()).changeLeft(false, vehicle.getGyro());
+
+        // Vehicle moves to the end of the street and stops when faced with an obstacle
+        verify(vehicle.getActuator(), times(19)).driveForward(false, vehicle.getGyro());
+        verify(vehicle.getActuator(), times(1)).driveForward(true, vehicle.getGyro());
+
+
+        verifyNoMoreInteractions(vehicle.getActuator());
+
+        reset(vehicle);
+
+
 
     }
 }

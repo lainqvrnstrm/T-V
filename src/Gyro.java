@@ -3,11 +3,6 @@ public class Gyro {
     private int longitude;
     private int latitude;
 
-    public Gyro() {
-        longitude = 0;
-        latitude = 0;
-    }
-
     public int getLatitude() {
         return latitude;
     }
