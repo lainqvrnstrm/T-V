@@ -103,7 +103,7 @@ class VehicleTest {
             leftLaneIndicator = vehicle.leftLaneDetect(vehicle_copy);
 
             assertTrue(leftLaneIndicator, "The radars readings are not valid");
-            
+
         }
 
         // Catches errors.
@@ -115,7 +115,7 @@ class VehicleTest {
         }
     }
     @org.junit.jupiter.api.Test
-    //TC1 for leftLaneDetect, 2 or more senors are working, and nothing is detected on the left lane
+        //TC1 for leftLaneDetect, 2 or more senors are working, and nothing is detected on the left lane
     void tc1_leftLaneDetect() throws Error{
 
         //Set 2 sensors are valid readings
@@ -131,7 +131,7 @@ class VehicleTest {
 
     }
     @org.junit.jupiter.api.Test
-    //TC2 for leftLaneDetect, 2 or more sensors are working, but there is a obstacle detected on the left lane.
+        //TC2 for leftLaneDetect, 2 or more sensors are working, but there is a obstacle detected on the left lane.
     void tc2_leftLaneDetect() throws Error{
 
         //Set 2 sensors are valid readings
@@ -272,7 +272,7 @@ class VehicleTest {
 
         // Calls the test method and stores the result.
         boolean changeLaneIndicator = vehicle.changeLane(vehicle_copy);
-        
+
         // Assert that we did not change lane, because incorrect sensor readings.
         assertFalse(changeLaneIndicator,
                 "The car can not change lane when there is a car detected in the lane to the left of it.");
