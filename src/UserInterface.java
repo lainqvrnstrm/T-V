@@ -163,20 +163,27 @@ public class UserInterface {
             vehicle.getFrontSideRadar().write(10);
             vehicle.getLidar().writeIndex(45, 11);
 
+            int longi = vehicle.getGyro().getLongitude();
+            int lati = vehicle.getGyro().getLatitude();
+
             // Front detecting radar.
-            for (int i = vehicle.getGyro().getLongitude()+3;
-                 i < (vehicle.getGyro().getLongitude()+10 > 100 ?100:vehicle.getGyro().getLongitude()+10); i++) {
-                vehicle.getFrontRadar().write(i-vehicle.getGyro().getLongitude());
+            int max = (longi+50 > 101 ?101:longi+50);
+            for (int i = longi+3;
+                 i < max; i++) {
+                if (map[lati][i] == 1) {
+                    vehicle.getFrontRadar().write(i-longi);
+                    break;
+                }
             }
 
             for (int i = 0; i < 3; i++) { // Sets side radars.
 
-                if (map[vehicle.getGyro().getLatitude() +1][(vehicle.getGyro().getLongitude() -i) < 0 ? 0: vehicle.getGyro().getLongitude() -i] == 1) {
+                if (map[lati +1][(longi -i) < 0 ? 0: longi -i] == 1) {
                     vehicle.getBackSideRadar().write(4);
                     vehicle.getLidar().writeIndex(45, 5);
                 }
 
-                if (map[vehicle.getGyro().getLatitude() +1][(vehicle.getGyro().getLongitude() +i) > 100?100:vehicle.getGyro().getLongitude() +i] == 1) {
+                if (map[lati +1][(longi +i) > 100?100:longi +i] == 1) {
                     vehicle.getFrontSideRadar().write(4);
                     vehicle.getLidar().writeIndex(45, 5);
                 }
