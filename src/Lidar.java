@@ -22,20 +22,6 @@ public class Lidar {
         return reading;
     }
 
-    void write(int[] newReading){
-        try{
-            if(newReading.length == 360){
-                reading = newReading;
-            }
-            else{
-                throw new Exception("The write method requires a an array of length 360");
-            }
-        }
-        catch(Exception e){
-
-        }
-    }
-
     /**
      * Sets a value at the given index. Added for tc0_leftLaneDetect
      * @param index

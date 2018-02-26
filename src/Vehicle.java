@@ -169,14 +169,15 @@ public class Vehicle { //tc0_moveForward()
 
         // tc0: Catches invalid leftLaneDetradar.getValue1()ect errors.
         try {
-            boolean leftLaneDetect = leftLaneDetect(secondQuery) && gyro.getLongitude() <= 95;
+            boolean leftLaneDetect = leftLaneDetect(secondQuery);
 
-            // tc1: Changes the lane to the left.
-            actuator.changeLeft(leftLaneDetect, gyro);
+
 
             // tc1: If we can change lane.
-            if (!leftLaneDetect) {
+            if (!leftLaneDetect && gyro.getLongitude() <= 95) {
 
+                // tc1: Changes the lane to the left.
+                actuator.changeLeft(leftLaneDetect&& gyro.getLongitude() <= 95, gyro);
                 // tc1: Return a successful change lane.
                 return true;
             }
