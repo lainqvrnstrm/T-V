@@ -2,13 +2,13 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 
 public class Vehicle { //tc0_moveForward()
-    public Gyro gyro;
-    public Radar backSideRadar;
-    public Radar frontSideRadar;
-    public Radar frontRadar;
-    public Lidar lidar;
-    public int speed = 5;
-    public Actuator actuator; // Added for tc0_driveForward.
+    private Gyro gyro;
+    private Radar backSideRadar;
+    private Radar frontSideRadar;
+    private Radar frontRadar;
+    private Lidar lidar;
+    private int speed = 5;
+    private Actuator actuator; // Added for tc0_driveForward.
 
     public Vehicle() { //tc0_moveForward()
         gyro = new Gyro();
@@ -26,6 +26,42 @@ public class Vehicle { //tc0_moveForward()
         this.frontRadar = frontRadar;
         this.lidar = lidar;
         this.actuator = actuator; // Added for tc0_driveForward.
+    }
+
+    public Gyro getGyro() {
+        return gyro;
+    }
+
+    public Radar getBackSideRadar() {
+        return backSideRadar;
+    }
+
+    public Radar getFrontSideRadar() {
+        return frontSideRadar;
+    }
+
+    public Radar getFrontRadar() {
+        return frontRadar;
+    }
+
+    public Lidar getLidar() {
+        return lidar;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public Actuator getActuator() {
+        return actuator;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public void setActuator(Actuator actuator) {
+        this.actuator = actuator;
     }
 
     /**

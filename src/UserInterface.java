@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * @author Pontus Laestadius
+ */
 public class UserInterface {
 
     public static void main(String[] args) {
@@ -17,14 +20,18 @@ public class UserInterface {
         for (int i = 0; i < cars; i++) {
             Vehicle vehicle = new Vehicle();
             System.out.println("Set Car #" + (i+1) + "'s position and speed");
-            vehicle.gyro.latitude = scanner.nextInt();
-            vehicle.gyro.longitude = scanner.nextInt();
-            vehicle.speed = scanner.nextInt();
+            vehicle.getGyro().setLatitude(scanner.nextInt());
+            vehicle.getGyro().setLongitude(scanner.nextInt());
+            vehicle.setSpeed(scanner.nextInt());
             vehicles.add(vehicle);
             render(vehicles);
         }
 
-        System.out.println("Commands:\nmove -> MoveForward\nchange -> ChangeLane\nprint -> Print sensor data");
+        System.out.println("Commands:" +
+                "\nmove -> MoveForward" +
+                "\nchange -> ChangeLane" +
+                "\nprint -> Print sensor data" +
+                "\nwait -> perform no action");
 
         while (true) {
             Vehicle car = vehicles.get(0);
@@ -34,7 +41,7 @@ public class UserInterface {
             // get the age as an int
             String command = scanner.nextLine();
             System.out.println();
-            boolean result;
+            boolean result = false;
 
             switch (command) {
                 case "move":
@@ -45,6 +52,9 @@ public class UserInterface {
                     break;
                 case "quit":
                     System.exit(0);
+                case "wait":
+                    // Perform no action.
+                    break;
                 case "print":
                     print(vehicles);
                 default:
@@ -54,108 +64,112 @@ public class UserInterface {
             System.out.println("Method output: " + result);
 
             // Move all the other cars forward.
-            for (int i = 1; i < vehicles.size(); i++) {
+            for (int i = 1; i < vehicles.size(); i++)
                 vehicles.get(i).moveForward();
-            }
+
             render(vehicles);
         }
     }
 
-    static void print(ArrayList<Vehicle> vehicles) {
+    private static void print(ArrayList<Vehicle> vehicles) {
         int i = 0;
-        for (Vehicle vehicle: vehicles) {
+        for (Vehicle vehicle: vehicles)
             System.out.println("Car #" + i++
-                            + "\nBackSideRadar: " + vehicle.backSideRadar.read()
-                            + "\nFrontSideRadar: " + vehicle.frontSideRadar.read()
-                            + "\nFrontRadar: " + vehicle.frontRadar.read()
+                            + "\nBackSideRadar: " + vehicle.getBackSideRadar().read()
+                            + "\nFrontSideRadar: " + vehicle.getFrontSideRadar().read()
+                            + "\nFrontRadar: " + vehicle.getFrontRadar().read()
             );
-        }
     }
 
-    static void render(ArrayList<Vehicle> vehicles) {
+    private static void render(ArrayList<Vehicle> vehicles) {
         int lanes = 3, range = 20;
         int map[][] = new int[lanes][range+1];
 
         for (Vehicle vehicle: vehicles) {
-            Gyro gyro = vehicle.gyro;
-            map[gyro.latitude][gyro.longitude/(101/range)]++;
+            Gyro gyro = vehicle.getGyro();
+            map[gyro.getLatitude()][gyro.getLongitude()/(101/range)]++;
         }
 
         for (int i = 0; i < range; i++) {
-            System.out.print("######");
+            System.out.print("||||");
         }
+
         System.out.println();
 
         // Prints out the cars.
         for (int i = lanes-1; i >= 0; i--) {
             for (int j = 0; j < range; j++) {
                 // Only allow one car at one place.
-                if (map[i][j] > 1) {
-                    System.out.println("Several cars at the same position.");
-                    System.exit(1);
-                }
-
-                if (map[i][j] == 1) {
-                    System.out.print("ō͡≡o");
-                } else {
-                    System.out.print("        ");
+                switch (map[i][j]) {
+                    case 1:
+                        System.out.print("ō͡≡o");
+                        break;
+                    case 2-Integer.MAX_VALUE:
+                        System.out.print("Erro");
+                        break;
+                    default:
+                        System.out.print("----");
                 }
             }
-            System.out.print("\n");
+            System.out.println(); // new lane.
         }
 
         for (int i = 0; i < range; i++) {
-            System.out.print("######");
+            System.out.print("||||");
         }
 
         System.out.println();
     }
 
-    static ArrayList<Vehicle> updateReadings(ArrayList<Vehicle> vehicles) {
-        int map[][] = new int[4][101];
+    private static ArrayList<Vehicle> updateReadings(ArrayList<Vehicle> vehicles) {
 
-        for (int i = 0; i < 4; i++)
-            map[i][100] = 1;
-        for (int i = 0; i < 101; i++)
-            map[3][i] = 1;
-
-        for (Vehicle vehicle: vehicles) {
-            // Draws it on a 2d map.
-            for (int i = vehicle.gyro.longitude; i < 100 && i > vehicle.gyro.longitude+3; i++) {
-                map[vehicle.gyro.latitude][i] = 1;
-            }
-        }
+        int map[][] = generateMap(vehicles);
 
         // Sets sensor readings based on map.
         for (Vehicle vehicle: vehicles) {
-            vehicle.frontRadar.write(50);
-            vehicle.backSideRadar.write(10);
-            vehicle.frontSideRadar.write(10);
-            vehicle.lidar.writeIndex(45, 11);
+            vehicle.getFrontRadar().write(50);
+            vehicle.getBackSideRadar().write(10);
+            vehicle.getFrontSideRadar().write(10);
+            vehicle.getLidar().writeIndex(45, 11);
 
             // Front detecting radar.
-            for (int i = vehicle.gyro.longitude+4;
-                 i < (vehicle.gyro.longitude+10 > 100 ?100:vehicle.gyro.longitude+10); i++) {
-                if (map[vehicle.gyro.latitude][i] == 1) {
-                    vehicle.frontRadar.write(i-vehicle.gyro.longitude);
+            for (int i = vehicle.getGyro().getLongitude()+4;
+                 i < (vehicle.getGyro().getLongitude()+10 > 100 ?100:vehicle.getGyro().getLongitude()+10); i++) {
+                if (map[vehicle.getGyro().getLatitude()][i] == 1) {
+                    vehicle.getFrontRadar().write(i-vehicle.getGyro().getLongitude());
                     break;
                 }
             }
 
             for (int i = 0; i < 3; i++) { // Sets side radars.
 
-                if (map[vehicle.gyro.latitude +1][(vehicle.gyro.longitude -i) < 0 ? 0: vehicle.gyro.longitude -i] == 1) {
-                    vehicle.backSideRadar.write(4);
-                    vehicle.lidar.writeIndex(45, 5);
+                if (map[vehicle.getGyro().getLatitude() +1][(vehicle.getGyro().getLongitude() -i) < 0 ? 0: vehicle.getGyro().getLongitude() -i] == 1) {
+                    vehicle.getBackSideRadar().write(4);
+                    vehicle.getLidar().writeIndex(45, 5);
                 }
 
-                if (map[vehicle.gyro.latitude +1][(vehicle.gyro.longitude +i) > 100?100:vehicle.gyro.longitude +i] == 1) {
-                    vehicle.frontSideRadar.write(4);
-                    vehicle.lidar.writeIndex(45, 5);
+                if (map[vehicle.getGyro().getLatitude() +1][(vehicle.getGyro().getLongitude() +i) > 100?100:vehicle.getGyro().getLongitude() +i] == 1) {
+                    vehicle.getFrontSideRadar().write(4);
+                    vehicle.getLidar().writeIndex(45, 5);
                 }
             }
         }
 
         return vehicles;
+    }
+
+    private static int[][] generateMap(ArrayList<Vehicle> vehicles) {
+        int map[][] = new int[4][101];
+
+        for (int i = 0; i < 4; i++) // Set end of road border.
+            map[i][100] = 1;
+        for (int i = 0; i < 101; i++) // Set top side border.
+            map[3][i] = 1;
+
+        for (Vehicle vehicle: vehicles)            // Draws it on a 2d map.
+            for (int i = vehicle.getGyro().getLongitude(); i < 100 && i < vehicle.getGyro().getLongitude()+3; i++)
+                map[vehicle.getGyro().getLatitude()][i] = 1;
+
+        return map;
     }
 }
