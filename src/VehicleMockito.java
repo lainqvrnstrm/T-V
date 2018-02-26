@@ -37,7 +37,6 @@ class VehicleMockito {
         MockitoAnnotations.initMocks(VehicleMockito.class);
         vehicle = mock(Vehicle.class);
         vehicle.setActuator(mock(Actuator.class));
-
     }
 
     /*

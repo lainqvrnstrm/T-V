@@ -469,7 +469,7 @@ class VehicleTest {
         vehicle.getGyro().setLatitude(0);
 
         // Use the actuator's driveForward method to move the car forward
-        vehicle.getActuator().driveForward(true, vehicle.getGyro());
+        vehicle.getActuator().driveForward(true, vehicle.getGyro(), 5);
 
         assertEquals(0, vehicle.getGyro().getLongitude(), "This should be 5 meters into the street.");
         assertEquals(0, vehicle.getGyro().getLatitude(), "This should be the starting lane.");
@@ -485,7 +485,7 @@ class VehicleTest {
         vehicle.getGyro().setLatitude(0);
 
         // Use the actuator's driveForward method to move the car forward
-        vehicle.getActuator().driveForward(false, vehicle.getGyro());
+        vehicle.getActuator().driveForward(false, vehicle.getGyro(), 5);
 
         assertEquals(5, vehicle.getGyro().getLongitude(), "This should be 0 meters into the street.");
         assertEquals(0, vehicle.getGyro().getLatitude(), "This should be the starting lane.");
