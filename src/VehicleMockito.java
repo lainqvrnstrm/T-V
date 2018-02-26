@@ -47,16 +47,18 @@ class VehicleMockito {
      */
     @Test
     void scenario1_changeLane() {
-        //Instantiate the vehicle object.
+
         int[] lidarReading = new int[360];
         lidarReading[45] = 25;
+        
+        //Assign values to the mocked objects.
         when(testGyro.getLongitude()).thenReturn(4,9,99);
         when(testLidar.read()).thenReturn(lidarReading);
         when(testFrontRadar.read()).thenReturn(50.00);
         when(testBackSideRadar.read()).thenReturn(20.00);
         when(testFrontSideRadar.read()).thenReturn(20.00);
 
-
+        //Instantiate the vehicle object.
         Vehicle vehicle = new Vehicle(testGyro,testBackSideRadar,testFrontSideRadar,testFrontRadar,testLidar,testActuator);
 
         vehicle.moveForward(); //move forward
@@ -75,13 +77,6 @@ class VehicleMockito {
         vehicle.moveForward();
         verify(vehicle.getActuator(),never()).driveForward(false, vehicle.getGyro());
 
-        //Something is fishy //TODO: check what the *bork* is up with the for loops.
-        //Vehicle moves until the end of the street
-        //for (int i = 5; i < 95; i += 5) //Increment by 5 since we are moving 5 meters every time.
-        //vehicle.moveForward();
-
-        //Verify that the method has been invoked the expected number of times.
-        //verify(vehicle.getActuator(), times(1)).driveForward(false, vehicle.getGyro());
     }
 
     @Test
@@ -250,7 +245,7 @@ class VehicleMockito {
 
          */
         when(vehicle.getLidar().read()).thenReturn(leftSide_obstacle, no_obstacle, no_obstacle, front_obstacle);
-        when(vehicle.getGyro().getLongitude()).thenReturn( 0,5, , 10, 100);
+        when(vehicle.getGyro().getLongitude()).thenReturn( 0,5, 10, 100);
         when(vehicle.getFrontRadar().read()).thenReturn(50.0, 10.0);
         when(vehicle.getFrontSideRadar().read()).thenReturn(4.0, 0.0);
         when(vehicle.getBackSideRadar().read()).thenReturn(4.0);
