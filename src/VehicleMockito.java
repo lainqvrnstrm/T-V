@@ -221,7 +221,6 @@ class VehicleMockito {
         int[] no_obstacle = new int[360];
         leftSide_obstacle[45] = 3;  // Dubbelkolla, så vettiga värden
 
-
         /*
                 Step                Obstacle detected
                 ---------------------------------------
