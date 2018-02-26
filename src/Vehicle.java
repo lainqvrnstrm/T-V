@@ -87,10 +87,13 @@ public class Vehicle { //tc0_moveForward()
 
         // If the gyro is less than the road distance and the move distance so we can't go beyond the road.
         double road_distance = 100;
-        if(gyro.getLongitude() <= road_distance-move_distance){ //Added for tc0.
+
+        // Variable added for mockito to use continuous stubbing easier.
+        int longitude = gyro.getLongitude();
+        if(longitude <= road_distance-move_distance){ //Added for tc0.
 
             // tc0: Increments the longitude of the gyro to simulate moving forward.
-            actuator.driveForward(!(gyro.getLongitude() <= road_distance-move_distance), gyro);
+            actuator.driveForward(!(longitude <= road_distance-move_distance), gyro);
             //this.gyro.longitude += (int) move_distance; //Added for tc0.
 
             // tc0: Returns true because incrementing the longitude moves the car. Returning true indicates a change of longitude.
@@ -164,12 +167,13 @@ public class Vehicle { //tc0_moveForward()
 
         // tc0: Catches invalid leftLaneDetradar.getValue1()ect errors.
         try {
+            boolean leftLaneDetect = leftLaneDetect(secondQuery);
 
             // tc1: If we can change lane.
-            if (!leftLaneDetect(secondQuery) && gyro.getLongitude() <= 95) {
+            if (!leftLaneDetect && gyro.getLongitude() <= 95) {
 
                 // tc1: Changes the lane to the left.
-                actuator.changeLeft(leftLaneDetect(secondQuery) && gyro.getLongitude() <= 95, gyro);
+                actuator.changeLeft(leftLaneDetect && gyro.getLongitude() <= 95, gyro);
 
                 // tc1: Return a successful change lane.
                 return true;
