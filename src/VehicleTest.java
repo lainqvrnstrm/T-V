@@ -101,8 +101,6 @@ class VehicleTest {
             boolean leftLaneIndicator;
             leftLaneIndicator = vehicle.leftLaneDetect(vehicle_copy);
 
-            assertTrue(leftLaneIndicator, "The radars readings are not valid");
-
         }
 
         // Catches errors.

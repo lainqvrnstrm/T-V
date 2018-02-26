@@ -35,6 +35,12 @@ class VehicleMockito {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(VehicleMockito.class);
+        reset(testActuator);
+        reset(testBackSideRadar);
+        reset(testFrontRadar);
+        reset(testFrontSideRadar);
+        reset(testGyro);
+        reset(testLidar);
         vehicle = mock(Vehicle.class);
         vehicle.setActuator(mock(Actuator.class));
     }
@@ -107,7 +113,7 @@ class VehicleMockito {
         obstacle[45] = 4;
 
         when(vehicle.getLidar().read()).thenReturn(no_obstacle, obstacle, no_obstacle); // stets no obstacle on the 2nd iteration of the lidar reading.
-        when(vehicle.getGyro().getLongitude()).thenReturn( 5, 10, 100); // Jumps in distance between 10 and 100 since nothing intresting happens inbetween.
+        when(vehicle.getGyro().getLongitude()).thenReturn( 5,   10, 100); // Jumps in distance between 10 and 100 since nothing intresting happens inbetween.
         when(vehicle.getFrontRadar().read()).thenReturn(10.0); // Set front radar reading to 10.
         when(vehicle.getFrontSideRadar().read()).thenReturn(4.0, 0.0); // side to 4 then 0.
         when(vehicle.getBackSideRadar().read()).thenReturn(4.0); // Obstacle detected when read.
@@ -120,7 +126,7 @@ class VehicleMockito {
 
         reset(vehicle.getActuator()); // Reset to check that it won't be called at the end.
         vehicle.moveForward(); // The car won't be able to move.
-        verify(vehicle.getActuator(), never()).driveForward(anyBoolean(), anyObject(), anyInt());
+        verify(vehicle.getActuator(), never()).driveForward(false, vehicle.getGyro(),5);
         verify(vehicle.getGyro(), times(3)).getLongitude();
 
 
@@ -135,7 +141,7 @@ class VehicleMockito {
 
         int[] inaccurateReadings = {33, 22};
         //testing more extensively.
-        when(testGyro.getLongitude()).thenReturn(4, 4, 9, 14, 19, 24, 29, 34, 39, 44, 49, 54, 59, 64, 69, 74, 79, 84, 89, 99);
+        when(testGyro.getLongitude()).thenReturn(4,  9, 14, 19, 24, 29, 34, 39, 44, 49, 54, 59, 64, 69, 74, 79, 84, 89, 99);
         //when(testGyro.getLongitude()).thenReturn(4, 9, 96);
         when(testLidar.read()).thenReturn(inaccurateReadings);
         when(testFrontRadar.read()).thenReturn(50.0);
@@ -160,10 +166,10 @@ class VehicleMockito {
         //Make sure we never changed lane, and that the method was never called.
         verify(vehicle.getActuator(), never()).changeLeft(anyBoolean(), anyObject());
 
-        for (int i = 5; i<100; i +=5) // Something here is fishy
+        for (int i = 5; i<95; i +=5) // Something here is fishy
             vehicle.moveForward();
 
-        verify(vehicle.getActuator(), times(19)).driveForward(false, vehicle.getGyro(),5);
+        verify(vehicle.getActuator(), times(18)).driveForward(false, vehicle.getGyro(),5);
 
 
         //Vehicle has met an obstruction and should not be able to move.
@@ -231,6 +237,7 @@ class VehicleMockito {
      * This should result in the vehicle NOT changing lane.
      */
 
+
     @Test
     void scenario5_obstacleDetectedOnce() {
 
@@ -295,4 +302,5 @@ class VehicleMockito {
         verifyNoMoreInteractions(vehicle.getActuator());
 
     }
+    
 }
