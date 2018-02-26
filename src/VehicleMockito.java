@@ -50,7 +50,7 @@ class VehicleMockito {
 
         int[] lidarReading = new int[360];
         lidarReading[45] = 25;
-        
+
         //Assign values to the mocked objects.
         when(testGyro.getLongitude()).thenReturn(4,9,99);
         when(testLidar.read()).thenReturn(lidarReading);
@@ -161,7 +161,7 @@ class VehicleMockito {
             fail("Something is not working");
 
         }catch(Error error){
-            System.out.println("Error was catched");
+            ;
         }
         //Make sure we never changed lane, and that the method was never called.
         verify(vehicle.getActuator(), never()).changeLeft(anyBoolean(), anyObject());
