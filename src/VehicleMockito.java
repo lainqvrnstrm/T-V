@@ -161,7 +161,7 @@ class VehicleMockito {
             fail("Something is not working");
 
         }catch(Error error){
-            ;
+            //OK
         }
         //Make sure we never changed lane, and that the method was never called.
         verify(vehicle.getActuator(), never()).changeLeft(anyBoolean(), anyObject());
