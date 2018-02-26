@@ -256,11 +256,11 @@ class VehicleMockito {
          */
 
 
-        when(vehicle.getLidar().read()).thenReturn(no_obstacle, leftSide_obstacle);  // 1st query - nothing detected. 2nd - detected.
-        when(vehicle.getGyro().getLongitude()).thenReturn( 0,5, 10, 100);
-        when(vehicle.getFrontRadar().read()).thenReturn(50.0);
-        when(vehicle.getFrontSideRadar().read()).thenReturn(50.0, 3.0);  // 1st query - nothing detected. 2nd - detected.
-        when(vehicle.getBackSideRadar().read()).thenReturn(50.0, 3.0);  // 1st query - nothing detected. 2nd - detected.
+        when(testLidar.read()).thenReturn(no_obstacle, leftSide_obstacle);  // 1st query - nothing detected. 2nd - detected.
+        when(testGyro.getLongitude()).thenReturn( 0,5, 10, 100);
+        when(testFrontRadar.read()).thenReturn(50.0);
+        when(testFrontSideRadar.read()).thenReturn(50.0, 3.0);  // 1st query - nothing detected. 2nd - detected.
+        when(testBackSideRadar.read()).thenReturn(50.0, 3.0);  // 1st query - nothing detected. 2nd - detected.
 
 
         // The vehicle starts at the beginning of the street. The sensors are set to their default value, which means they are initially not detecting anything.
