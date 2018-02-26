@@ -50,7 +50,7 @@ class VehicleMockito {
         //Instantiate the vehicle object.
         int[] lidarReading = new int[360];
         lidarReading[45] = 25;
-        when(testGyro.getLongitude()).thenReturn(4,9,14,99);
+        when(testGyro.getLongitude()).thenReturn(4,9,99);
         when(testLidar.read()).thenReturn(lidarReading);
         when(testFrontRadar.read()).thenReturn(50.00);
         when(testBackSideRadar.read()).thenReturn(20.00);
@@ -64,25 +64,24 @@ class VehicleMockito {
 
         //Vehicle changes lane and move forward.
         vehicle.changeLane();
-
         //Verify the lane has been changed.
         verify(vehicle.getActuator()).changeLeft(false, vehicle.getGyro());
 
         //move forward until end
         vehicle.moveForward();
-        verify(vehicle.getActuator()).changeLeft(false, vehicle.getGyro());
-
+        verify(vehicle.getActuator()).driveForward(false, vehicle.getGyro());
         //Vehicle should not go further.
         reset(vehicle.getActuator());
+        vehicle.moveForward();
         verify(vehicle.getActuator(),never()).driveForward(false, vehicle.getGyro());
 
         //Something is fishy //TODO: check what the *bork* is up with the for loops.
         //Vehicle moves until the end of the street
         //for (int i = 5; i < 95; i += 5) //Increment by 5 since we are moving 5 meters every time.
-        vehicle.moveForward();
+        //vehicle.moveForward();
 
         //Verify that the method has been invoked the expected number of times.
-        verify(vehicle.getActuator(), times(1)).driveForward(false, vehicle.getGyro());
+        //verify(vehicle.getActuator(), times(1)).driveForward(false, vehicle.getGyro());
     }
 
     @Test
@@ -146,6 +145,7 @@ class VehicleMockito {
     void scenario_3_failedSensors() {
 
         int[] inaccurateReadings = {33, 22};
+        //testing more extensively.
         when(testGyro.getLongitude()).thenReturn(4, 4, 9, 14, 19, 24, 29, 34, 39, 44, 49, 54, 59, 64, 69, 74, 79, 84, 89, 99);
         //when(testGyro.getLongitude()).thenReturn(4, 9, 96);
         when(testLidar.read()).thenReturn(inaccurateReadings);
