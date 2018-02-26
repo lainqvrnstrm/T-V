@@ -125,13 +125,6 @@ class VehicleMockito {
 
     }
 
-
-    @Test
-    void scenario_name_and_purpose2() {
-
-    }
-
-
     /*
         Method for testing Scenario 3.
         Sensors are broken and car cannot change lane, thus going forward until the end.
@@ -242,7 +235,6 @@ class VehicleMockito {
 
         when(vehicle.getLidar().read()).thenReturn(leftSide_obstacle, no_obstacle, no_obstacle);
         when(vehicle.getGyro().getLongitude()).thenReturn( 0,5, 10, 100);
-
         when(vehicle.getFrontRadar().read()).thenReturn(50.0, 10.0);
         when(vehicle.getFrontSideRadar().read()).thenReturn(4.0, 0.0);
         when(vehicle.getBackSideRadar().read()).thenReturn(4.0);
