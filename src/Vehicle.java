@@ -93,7 +93,7 @@ public class Vehicle { //tc0_moveForward()
         if(longitude <= road_distance-move_distance){ //Added for tc0.
 
             // tc0: Increments the longitude of the gyro to simulate moving forward.
-            actuator.driveForward(!(longitude <= road_distance-move_distance), gyro);
+            actuator.driveForward(!(longitude <= road_distance-move_distance), gyro, speed);
             //this.gyro.longitude += (int) move_distance; //Added for tc0.
 
             // tc0: Returns true because incrementing the longitude moves the car. Returning true indicates a change of longitude.

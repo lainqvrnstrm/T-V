@@ -62,7 +62,7 @@ class VehicleMockito {
         Vehicle vehicle = new Vehicle(testGyro,testBackSideRadar,testFrontSideRadar,testFrontRadar,testLidar,testActuator);
 
         vehicle.moveForward(); //move forward
-        verify(vehicle.getActuator()).driveForward(false, vehicle.getGyro());
+        verify(vehicle.getActuator()).driveForward(false, vehicle.getGyro(),5 );
 
         //Vehicle changes lane and move forward.
         vehicle.changeLane();
@@ -71,11 +71,11 @@ class VehicleMockito {
 
         //move forward until end
         vehicle.moveForward();
-        verify(vehicle.getActuator()).driveForward(false, vehicle.getGyro());
+        verify(vehicle.getActuator()).driveForward(false, vehicle.getGyro(),5);
         //Vehicle should not go further.
         reset(vehicle.getActuator());
         vehicle.moveForward();
-        verify(vehicle.getActuator(),never()).driveForward(false, vehicle.getGyro());
+        verify(vehicle.getActuator(),never()).driveForward(false, vehicle.getGyro(),5);
 
     }
 
@@ -112,25 +112,18 @@ class VehicleMockito {
         when(vehicle.getBackSideRadar().read()).thenReturn(4.0); // Obstacle detected when read.
 
         vehicle.moveForward(); // call the controller method to move forward.
-        verify(vehicle.getActuator()).driveForward(false, vehicle.getGyro());
+        verify(vehicle.getActuator()).driveForward(false, vehicle.getGyro(),5);
 
         vehicle.changeLane(); // call the controller method to change lane.
         verify(vehicle.getActuator(), never()).changeLeft(false, vehicle.getGyro());
 
         reset(vehicle.getActuator()); // Reset to check that it won't be called at the end.
         vehicle.moveForward(); // The car won't be able to move.
-        verify(vehicle.getActuator(), never()).driveForward(anyBoolean(), anyObject());
+        verify(vehicle.getActuator(), never()).driveForward(anyBoolean(), anyObject(),5);
         verify(vehicle.getGyro(), times(5)).getLongitude();
 
 
     }
-
-
-    @Test
-    void scenario_name_and_purpose2() {
-
-    }
-
 
     /*
         Method for testing Scenario 3.
@@ -153,7 +146,7 @@ class VehicleMockito {
 
         //Move forward and make sure that the subMethods are used.
         vehicle.moveForward();
-        verify(vehicle.getActuator()).driveForward(false, vehicle.getGyro());
+        verify(vehicle.getActuator()).driveForward(false, vehicle.getGyro(),5);
 
         //Tries to change lane, error is catched.
         try{
@@ -168,12 +161,12 @@ class VehicleMockito {
 
         for (int i = 5; i<100; i +=5) // Something here is fishy
             vehicle.moveForward();
-        verify(vehicle.getActuator(), times(19)).driveForward(false, vehicle.getGyro());
+        verify(vehicle.getActuator(), times(19)).driveForward(false, vehicle.getGyro(),5);
 
         //Vehicle has met an obstruction and should not be able to move.
         reset(vehicle.getActuator());
         vehicle.moveForward();
-        verify(vehicle.getActuator(), never()).driveForward(false, vehicle.getGyro());
+        verify(vehicle.getActuator(), never()).driveForward(false, vehicle.getGyro(),5);
 
     }
      /*
@@ -216,21 +209,16 @@ class VehicleMockito {
     }
 
     /**
-     * An obstacle is detected in the first query but not the second, when trying to change to the left lane.
+     * An obstacle is NOT detected in the first query but is in the second, when trying to change to the left lane.
      * This should result in the vehicle NOT changing lane.
      */
 
     @Test
     void scenario5_obstacleDetectedOnce() {
 
-
-
-
-
-        int[] front_obstacle = new int[360];
+        // Lidar readings
         int[] leftSide_obstacle = new int[360];
         int[] no_obstacle = new int[360];
-        front_obstacle[0] = 1;  // Dubbelkolla, så vettiga värden
         leftSide_obstacle[45] = 3;  // Dubbelkolla, så vettiga värden
 
 
@@ -238,25 +226,26 @@ class VehicleMockito {
                 Step                Obstacle detected
                 ---------------------------------------
                 Move forward        |false
-                Left lane detect    |true
                 Left lane detect    |false
+                Left lane detect    |true
                 Move forward (cont) |false
                 Last move forward   |true
 
          */
-        when(vehicle.getLidar().read()).thenReturn(leftSide_obstacle, no_obstacle, no_obstacle, front_obstacle);
+
+        when(vehicle.getLidar().read()).thenReturn(no_obstacle, leftSide_obstacle);  // 1st query - nothing detected. 2nd - detected.
         when(vehicle.getGyro().getLongitude()).thenReturn( 0,5, 10, 100);
-        when(vehicle.getFrontRadar().read()).thenReturn(50.0, 10.0);
-        when(vehicle.getFrontSideRadar().read()).thenReturn(4.0, 0.0);
-        when(vehicle.getBackSideRadar().read()).thenReturn(4.0);
+        when(vehicle.getFrontRadar().read()).thenReturn(50.0);
+        when(vehicle.getFrontSideRadar().read()).thenReturn(50.0, 3.0);  // 1st query - nothing detected. 2nd - detected.
+        when(vehicle.getBackSideRadar().read()).thenReturn(50.0, 3.0);  // 1st query - nothing detected. 2nd - detected.
 
         // The vehicle starts at the beginning of the street. The sensors are set to their default value, which means they are initially not detecting anything.
         Vehicle vehicle  = new Vehicle(testGyro, testBackSideRadar, testFrontSideRadar, testFrontRadar, testLidar, testActuator);
 
         // The vehicle moves forward once without hindrance
         vehicle.moveForward();
-        verify(vehicle.getActuator(), times(1)).driveForward(false, vehicle.getGyro());
-        verify(vehicle.getActuator(), never()).driveForward(true, vehicle.getGyro());
+        verify(vehicle.getActuator(), times(1)).driveForward(false, vehicle.getGyro(), 5);
+        verify(vehicle.getActuator(), never()).driveForward(true, vehicle.getGyro(), 5);
 
         // Vehicle requests to change left by querying the sensors
         vehicle.changeLane();
@@ -264,8 +253,8 @@ class VehicleMockito {
         verify(vehicle.getActuator(), never()).changeLeft(false, vehicle.getGyro());
 
         // Vehicle moves to the end of the street and stops when faced with an obstacle
-        verify(vehicle.getActuator(), times(19)).driveForward(false, vehicle.getGyro());
-        verify(vehicle.getActuator(), times(1)).driveForward(true, vehicle.getGyro());
+        verify(vehicle.getActuator(), times(19)).driveForward(false, vehicle.getGyro(), 5);
+        verify(vehicle.getActuator(), times(1)).driveForward(true, vehicle.getGyro(), 5);
 
 
         verifyNoMoreInteractions(vehicle.getActuator());
