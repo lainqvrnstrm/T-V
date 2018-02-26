@@ -231,15 +231,9 @@ class VehicleMockito {
     @Test
     void scenario5_obstacleDetectedOnce() {
 
-        testGyro = mock(Gyro.class);
-        testBackSideRadar = mock(Radar.class);
-        testFrontSideRadar = mock(Radar.class);
-        testFrontRadar = mock(Radar.class);
-        testLidar = mock(Lidar.class);
-        testActuator = mock(Actuator.class);
 
-        // The vehicle starts at the beginning of the street. The sensors are set to their default value, which means they are initially not detecting anything.
-        Vehicle vehicle  = new Vehicle(testGyro, testBackSideRadar, testFrontSideRadar, testFrontRadar, testLidar, testActuator);
+
+
 
         int[] front_obstacle = new int[360];
         int[] leftSide_obstacle = new int[360];
@@ -258,11 +252,14 @@ class VehicleMockito {
                 Last move forward   |true
 
          */
-        when(vehicle.getLidar().read()).thenReturn(no_obstacle, leftSide_obstacle, no_obstacle, no_obstacle, front_obstacle);
-        when(vehicle.getGyro().getLongitude()).thenReturn( 5, , 10, 100);
+        when(vehicle.getLidar().read()).thenReturn(leftSide_obstacle, no_obstacle, no_obstacle, front_obstacle);
+        when(vehicle.getGyro().getLongitude()).thenReturn( 0,5, , 10, 100);
         when(vehicle.getFrontRadar().read()).thenReturn(50.0, 10.0);
         when(vehicle.getFrontSideRadar().read()).thenReturn(4.0, 0.0);
         when(vehicle.getBackSideRadar().read()).thenReturn(4.0);
+
+        // The vehicle starts at the beginning of the street. The sensors are set to their default value, which means they are initially not detecting anything.
+        Vehicle vehicle  = new Vehicle(testGyro, testBackSideRadar, testFrontSideRadar, testFrontRadar, testLidar, testActuator);
 
         // The vehicle moves forward once without hindrance
         vehicle.moveForward();
