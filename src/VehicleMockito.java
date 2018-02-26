@@ -76,16 +76,13 @@ class VehicleMockito {
         reset(vehicle.getActuator());
         verify(vehicle.getActuator(),never()).driveForward(false, vehicle.getGyro());
 
-        /* //Something is fishy //TODO: check what the *bork* is up with the for loops.
+        //Something is fishy //TODO: check what the *bork* is up with the for loops.
         //Vehicle moves until the end of the street
-        for (int i = 5; i < 95; i += 5) //Increment by 5 since we are moving 5 meters every time.
-            vehicle.moveForward();
+        //for (int i = 5; i < 95; i += 5) //Increment by 5 since we are moving 5 meters every time.
+        vehicle.moveForward();
 
         //Verify that the method has been invoked the expected number of times.
-        verify(vehicle.actuator, times(17)).driveForward(false, vehicle.gyro);
-        */
-
-
+        verify(vehicle.getActuator(), times(1)).driveForward(false, vehicle.getGyro());
     }
 
     @Test
@@ -149,8 +146,8 @@ class VehicleMockito {
     void scenario_3_failedSensors() {
 
         int[] inaccurateReadings = {33, 22};
-        //when(testGyro.getLongitude()).thenReturn(4, 4, 9, 14, 19, 24, 29, 34, 39, 44, 49, 54, 59, 64, 69, 74, 79, 84, 89, 99);
-        when(testGyro.getLongitude()).thenReturn(4, 9, 96);
+        when(testGyro.getLongitude()).thenReturn(4, 4, 9, 14, 19, 24, 29, 34, 39, 44, 49, 54, 59, 64, 69, 74, 79, 84, 89, 99);
+        //when(testGyro.getLongitude()).thenReturn(4, 9, 96);
         when(testLidar.read()).thenReturn(inaccurateReadings);
         when(testFrontRadar.read()).thenReturn(50.0);
         when(testBackSideRadar.read()).thenReturn(99.0, 26.0);
@@ -174,9 +171,9 @@ class VehicleMockito {
         //Make sure we never changed lane, and that the method was never called.
         verify(vehicle.getActuator(), never()).changeLeft(anyBoolean(), anyObject());
 
-        //for (int i = 5; i<95; i +=5) // Something here is fishy
-        //vehicle.moveForward();
-        //verify(vehicle.actuator, times(19)).driveForward(false, vehicle.gyro);
+        for (int i = 5; i<100; i +=5) // Something here is fishy
+            vehicle.moveForward();
+        verify(vehicle.getActuator(), times(19)).driveForward(false, vehicle.getGyro());
 
         //Vehicle has met an obstruction and should not be able to move.
         reset(vehicle.getActuator());
