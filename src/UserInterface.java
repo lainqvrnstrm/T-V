@@ -49,13 +49,21 @@ public class UserInterface {
                 case "wait":
                     // Perform no action.
                     break;
+                case "save":
+                    System.out.println("--------------------------");
+                    for (int i = 1; i < vehicles.size(); i++) {
+                        System.out.println(vehicles.get(i).getGyro().getLatitude());
+                        System.out.println(vehicles.get(i).getGyro().getLongitude());
+                        System.out.println(vehicles.get(i).getSpeed());
+                    }
+                    System.out.println("--------------------------");
                 case "print":
                     print(vehicles);
                 default:
                     continue;
             }
 
-            System.out.println("Method output: " + result);
+            System.out.println("(" + command + ") " + "Method output: " + result);
 
             // Move all the other cars forward.
             for (int i = 1; i < vehicles.size(); i++)
@@ -94,7 +102,8 @@ public class UserInterface {
                 "\nchange -> ChangeLane" +
                 "\nprint -> Print sensor data" +
                 "\nwait -> perform no action" +
-                "\nauto -> runs simulation automated"
+                "\nauto -> runs simulation automated" +
+                "\nsave -> prints out input for reentering"
         );
 
         return vehicles;
@@ -104,39 +113,36 @@ public class UserInterface {
         int i = 0;
         for (Vehicle vehicle: vehicles)
             System.out.println("Car #" + i++
-                            + "\nBackSideRadar: " + vehicle.getBackSideRadar().read()
-                            + "\nFrontSideRadar: " + vehicle.getFrontSideRadar().read()
-                            + "\nFrontRadar: " + vehicle.getFrontRadar().read()
+                    + "\nBackSideRadar: " + vehicle.getBackSideRadar().read()
+                    + "\nFrontSideRadar: " + vehicle.getFrontSideRadar().read()
+                    + "\nFrontRadar: " + vehicle.getFrontRadar().read()
+                    + "\nLatitude:" + vehicle.getGyro().getLatitude()
+                    + "\nLongitude:" + vehicle.getGyro().getLongitude()
+                    + "\nSpeed:" + vehicle.getSpeed()
             );
     }
 
     private static void render(ArrayList<Vehicle> vehicles) {
         int lanes = 3, range = 101;
         int map[][] = generateMap(vehicles);
-        for (int i = 0; i < range/4; i++) {
-            System.out.print("||||");
-        }
-
+        for (int i = 0; i < range; i++)
+            System.out.print("|");
         System.out.println();
 
-        // Prints out the cars.
-        for (int i = lanes-1; i >= 0; i--) {
+        for (int i = lanes-1; i >= 0; i--) { // Prints out the cars.
             for (int j = 0; j < range; j++) {
-
                 if (j >= 100) {
                     System.out.print("|");
                     continue;
                 }
-
-                // Only allow one car at one place.
-                switch (map[i][j]) {
+                switch (map[i][j]) { // Only allow one car at one place.
                     case 1:
                         System.out.print("ō͡≡o");
                         j += 3;
                         break;
                     case 2-Integer.MAX_VALUE:
-                        System.out.print("Erro");
-                        j += 4;
+                        System.out.println("\nMultiple vehicles at the same position.");
+                        System.exit(2);
                         break;
                     default:
                         System.out.print("-");
@@ -145,9 +151,8 @@ public class UserInterface {
             System.out.println(); // new lane.
         }
 
-        for (int i = 0; i < range/4; i++) {
-            System.out.print("||||");
-        }
+        for (int i = 0; i < range; i++)
+            System.out.print("|");
 
         System.out.println();
     }
@@ -165,11 +170,9 @@ public class UserInterface {
 
             int longi = vehicle.getGyro().getLongitude();
             int lati = vehicle.getGyro().getLatitude();
-
-            // Front detecting radar.
             int max = (longi+50 > 101 ?101:longi+50);
-            for (int i = longi+3;
-                 i < max; i++) {
+
+            for (int i = longi+3; i < max; i++) { // Front detecting radar.
                 if (map[lati][i] == 1) {
                     vehicle.getFrontRadar().write(i-longi);
                     break;
