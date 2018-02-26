@@ -209,7 +209,7 @@ class VehicleMockito {
     }
 
     /**
-     * An obstacle is detected in the first query but not the second, when trying to change to the left lane.
+     * An obstacle is NOT detected in the first query but is in the second, when trying to change to the left lane.
      * This should result in the vehicle NOT changing lane.
      */
 
@@ -226,18 +226,18 @@ class VehicleMockito {
                 Step                Obstacle detected
                 ---------------------------------------
                 Move forward        |false
-                Left lane detect    |true
                 Left lane detect    |false
+                Left lane detect    |true
                 Move forward (cont) |false
                 Last move forward   |true
 
          */
 
-        when(vehicle.getLidar().read()).thenReturn(leftSide_obstacle, no_obstacle);
+        when(vehicle.getLidar().read()).thenReturn(no_obstacle, leftSide_obstacle);  // 1st query - nothing detected. 2nd - detected.
         when(vehicle.getGyro().getLongitude()).thenReturn( 0,5, 10, 100);
-        when(vehicle.getFrontRadar().read()).thenReturn(50.0, 10.0);
-        when(vehicle.getFrontSideRadar().read()).thenReturn(2.0, 0.);
-        when(vehicle.getBackSideRadar().read()).thenReturn(4.0);
+        when(vehicle.getFrontRadar().read()).thenReturn(50.0);
+        when(vehicle.getFrontSideRadar().read()).thenReturn(50.0, 3.0);  // 1st query - nothing detected. 2nd - detected.
+        when(vehicle.getBackSideRadar().read()).thenReturn(50.0, 3.0);  // 1st query - nothing detected. 2nd - detected.
 
         // The vehicle starts at the beginning of the street. The sensors are set to their default value, which means they are initially not detecting anything.
         Vehicle vehicle  = new Vehicle(testGyro, testBackSideRadar, testFrontSideRadar, testFrontRadar, testLidar, testActuator);
