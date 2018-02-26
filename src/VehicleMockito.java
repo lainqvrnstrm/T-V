@@ -167,35 +167,41 @@ class VehicleMockito {
     */
     @Test
     void scenario_4_failedSensor() {
-        //The car moves forward
-        when(vehicle.moveForward()).thenReturn(true);
+
+        Vehicle vehicle  = new Vehicle(testGyro, testBackSideRadar, testFrontSideRadar, testFrontRadar, testLidar, testActuator);
+
+        int[] obstacle = new int[360];
+        int[] no_obstacle = new int[360];
+        obstacle[45] = 4;
+
+        when(vehicle.lidar.read()).thenReturn(no_obstacle, obstacle, no_obstacle);
+        when(vehicle.gyro.getLongitude()).thenReturn(5, 5, 10, 10, 100);
+        when(vehicle.frontRadar.read()).thenReturn(10.0);
+        when(vehicle.frontSideRadar.read()).thenReturn(4.0);
+        when(vehicle.backSideRadar.read()).thenReturn(4.0);
+
         vehicle.moveForward();
+        verify(vehicle.actuator).driveForward(false, vehicle.gyro);
 
-        //The car tries to change lane by calling leftLaneDetect()
-        // there is something detected.
+        vehicle.leftLaneDetect();
+        verify(vehicle.actuator, never()).changeLeft(false, vehicle.gyro);
 
-        when(vehicle.leftLaneDetect()).thenReturn(true);
-        assertEquals(vehicle.changeLane(), true);
-
-        //When car wants to change lane, the second query returns error code showing sensors are broken
         when(vehicle.changeLane()).thenThrow(new Error());
+
         try{
             vehicle.changeLane();
-            fail("Something is broken");
-
+            fail("broken sensor");
         }catch(Error error){
 
         }
 
-        //The car moves till the end of the street
-        for(int i = vehicle.gyro.longitude; i<95; i+=5 ) { //Increment by 5 since
-            when(vehicle.moveForward()).thenReturn(true);
-            vehicle.moveForward();
-        }
-        verify(vehicle, times(19)).moveForward();
+        reset(vehicle.actuator); // Reset to check that it won't be called at the end.
+        vehicle.moveForward(); // The car won't be able to move.
+        verify(vehicle.actuator, never()).driveForward(anyBoolean(), anyObject());
+        verify(vehicle.gyro, times(6)).getLongitude();
 
-        //Vehicle has met an obstruction
-        when(vehicle.moveForward()).thenReturn(false);
+
+
 
     }
 }
