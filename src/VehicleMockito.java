@@ -106,21 +106,21 @@ class VehicleMockito {
         obstacle[45] = 4;
 
         when(vehicle.getLidar().read()).thenReturn(no_obstacle, obstacle, no_obstacle); // stets no obstacle on the 2nd iteration of the lidar reading.
-        when(vehicle.getGyro().getLongitude()).thenReturn(5, 5, 10, 10, 100); // Jumps in distance between 10 and 100 since nothing intresting happens inbetween.
+        when(vehicle.getGyro().getLongitude()).thenReturn( 5, 10, 100); // Jumps in distance between 10 and 100 since nothing intresting happens inbetween.
         when(vehicle.getFrontRadar().read()).thenReturn(10.0); // Set front radar reading to 10.
         when(vehicle.getFrontSideRadar().read()).thenReturn(4.0, 0.0); // side to 4 then 0.
         when(vehicle.getBackSideRadar().read()).thenReturn(4.0); // Obstacle detected when read.
 
         vehicle.moveForward(); // call the controller method to move forward.
-        verify(vehicle.getActuator()).driveForward(false, vehicle.getGyro(),5);
+        verify(vehicle.getActuator()).driveForward(anyBoolean(), anyObject(), anyInt());
 
         vehicle.changeLane(); // call the controller method to change lane.
         verify(vehicle.getActuator(), never()).changeLeft(false, vehicle.getGyro());
 
         reset(vehicle.getActuator()); // Reset to check that it won't be called at the end.
         vehicle.moveForward(); // The car won't be able to move.
-        verify(vehicle.getActuator(), never()).driveForward(anyBoolean(), anyObject(),5);
-        verify(vehicle.getGyro(), times(5)).getLongitude();
+        verify(vehicle.getActuator(), never()).driveForward(anyBoolean(), anyObject(), anyInt());
+        verify(vehicle.getGyro(), times(3)).getLongitude();
 
 
     }
