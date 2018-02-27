@@ -120,9 +120,15 @@ class VehicleTest {
         vehicle.getFrontSideRadar().write(15);
         vehicle.getLidar().writeIndex(45, 15);
 
+        // Second query readings
+        Vehicle clone = new Vehicle();
+        clone.getBackSideRadar().write(15);
+        clone.getFrontSideRadar().write(15);
+        clone.getLidar().writeIndex(45, 15);
+
         // Calls the test method and stores the result.
         boolean leftLaneIndicator;
-        leftLaneIndicator = vehicle.leftLaneDetect();
+        leftLaneIndicator = vehicle.leftLaneDetect(clone);
 
         assertFalse(leftLaneIndicator, "Nothing is detected on the left lane");
 
@@ -137,9 +143,15 @@ class VehicleTest {
         vehicle.getFrontSideRadar().write(3);
         vehicle.getLidar().writeIndex(45, 5);
 
+        // Second query readings
+        Vehicle clone = new Vehicle();
+        clone.getBackSideRadar().write(15);
+        clone.getFrontSideRadar().write(3);
+        clone.getLidar().writeIndex(45, 5);
+
         // Calls the test method and stores the result.
         boolean leftLaneIndicator;
-        leftLaneIndicator = vehicle.leftLaneDetect();
+        leftLaneIndicator = vehicle.leftLaneDetect(clone);
 
 
         assertTrue(leftLaneIndicator, "there is something detected on the left lane");

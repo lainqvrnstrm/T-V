@@ -28,31 +28,31 @@ public class Vehicle { //tc0_moveForward()
         this.actuator = actuator; // Added for tc0_driveForward.
     }
 
+    public int getSpeed() {
+        return speed;
+    }
+
     public Gyro getGyro() {
         return gyro;
-    }
-
-    public Radar getBackSideRadar() {
-        return backSideRadar;
-    }
-
-    public Radar getFrontSideRadar() {
-        return frontSideRadar;
-    }
-
-    public Radar getFrontRadar() {
-        return frontRadar;
     }
 
     public Lidar getLidar() {
         return lidar;
     }
 
-    public int getSpeed() {
-        return speed;
+    public Radar getFrontRadar() {
+        return frontRadar;
     }
 
-    public Actuator getActuator() {
+    public Radar getFrontSideRadar() {
+        return frontSideRadar;
+    }
+
+    public Radar getBackSideRadar() {
+        return backSideRadar;
+    }
+
+    public Actuator getActuator() {    // Added to test methods changeLeft and driveForward.
         return actuator;
     }
 
@@ -62,6 +62,18 @@ public class Vehicle { //tc0_moveForward()
 
     public void setActuator(Actuator actuator) {
         this.actuator = actuator;
+    }
+
+    public void setBackSideRadar(Radar backSideRadar) {
+        this.backSideRadar = backSideRadar;
+    }
+
+    public void setFrontSideRadar(Radar frontSideRadar) {
+        this.frontSideRadar = frontSideRadar;
+    }
+
+    public void setLidar(Lidar lidar) {
+        this.lidar = lidar;
     }
 
     /**
@@ -117,6 +129,7 @@ public class Vehicle { //tc0_moveForward()
         double[] readingsSecondQuery = Arrays.copyOf(readings, 2);
         int[] lidarsSecondQuery = lidar.read();
         if (secondQuery.length != 0) {
+            System.out.println("heeeey");
             readingsSecondQuery[0] = secondQuery[0].backSideRadar.read();
             readingsSecondQuery[1] = secondQuery[0].frontSideRadar.read();
             lidarsSecondQuery = secondQuery[0].lidar.read();
@@ -167,7 +180,7 @@ public class Vehicle { //tc0_moveForward()
      */
     public boolean changeLane(Vehicle... secondQuery) {
 
-        // tc0: Catches invalid leftLaneDetradar.getValue1()ect errors.
+        // tc0: Catches invalid leftLaneDetect.getValue1()ect errors.
         try {
             boolean leftLaneDetect = leftLaneDetect(secondQuery);
 
