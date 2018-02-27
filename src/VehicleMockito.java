@@ -87,15 +87,7 @@ class VehicleMockito {
     }
 
     @Test
-    void scenario_2() {
-        /*
-        Only use as a reference, don't copy paste stuff.
-        Follows this structure:
-            Set mocked objects return value
-            Call controller method
-            Verify that the model got the request to change the data.
-        */
-
+    void scenario2_obstacleDetectedTwice() {
         /*
         Create a vehicle Object which is the Controller and the mocked objects are the models' which store all the data
         for it's given state. This enables the use of the Vehicle methods as a controller and to test that the model
@@ -112,9 +104,9 @@ class VehicleMockito {
         int[] no_obstacle = new int[360];
         obstacle[45] = 4;
 
-        when(testLidar.read()).thenReturn(no_obstacle, obstacle, no_obstacle); // stets no obstacle on the 2nd iteration of the lidar reading.
-        when(testGyro.getLongitude()).thenReturn( 5,   10, 100); // Jumps in distance between 10 and 100 since nothing intresting happens inbetween.
-        when(testFrontRadar.read()).thenReturn(10.0); // Set front radar reading to 10.
+        when(testLidar.read()).thenReturn(no_obstacle, obstacle, no_obstacle); // sets no obstacle on the 2nd iteration of the lidar reading.
+        when(testGyro.getLongitude()).thenReturn( 5,   10, 100); // Ignore 11-99 as they are tested elsewhere.
+        when(testFrontRadar.read()).thenReturn(10.0, 10.0, 10.0, 0.0); // Set front radar reading to 10.
         when(testFrontSideRadar.read()).thenReturn(4.0, 0.0); // side to 4 then 0.
         when(testBackSideRadar.read()).thenReturn(4.0); // Obstacle detected when read.
 
@@ -128,8 +120,6 @@ class VehicleMockito {
         vehicle.moveForward(); // The car won't be able to move.
         verify(testActuator, never()).driveForward(false, testGyro,5);
         verify(testGyro, times(3)).getLongitude();
-
-
     }
 
     /*

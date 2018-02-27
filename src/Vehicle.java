@@ -118,9 +118,14 @@ public class Vehicle { //tc0_moveForward()
         return false; //Added for tc0.
     }
 
-    /*
-    signature updated to take arguments.
+    /**
+     * @param secondQuery Given no parameters the car will mimic it’s own cars readings twice.
+     *                    Give a secondary vehicle it will be used as the second query to the vehicle.
+     *                    If they different, it will be indicated as a not working sensor and throw an error.
+     * @return true for obstacle to the left, false for no obstacle. Error if incorrect readings provided.
+     * @throws Error when less than two sensors are working.
      */
+    //signature updated to take arguments.
     public boolean leftLaneDetect(Vehicle... secondQuery) throws Error {
         //tc0: variables added to create leftLaneDetect.
         double[] readings = {backSideRadar.read(), frontSideRadar.read()};
@@ -175,7 +180,7 @@ public class Vehicle { //tc0_moveForward()
     }
 
     /**
-     *
+     * @param secondQuery Are passed to LeftLaneDetect and serves the same purpose
      * @return whether or not the car has changed lane.
      */
     public boolean changeLane(Vehicle... secondQuery) {
@@ -183,8 +188,6 @@ public class Vehicle { //tc0_moveForward()
         // tc0: Catches invalid leftLaneDetect.getValue1()ect errors.
         try {
             boolean leftLaneDetect = leftLaneDetect(secondQuery);
-
-
 
             // tc1: If we can change lane.
             if (!leftLaneDetect && gyro.getLongitude() <= 95) {
