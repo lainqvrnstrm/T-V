@@ -94,8 +94,8 @@ class VehicleTest {
 
             // Make a vehicle clone to fake the second query readings.
             Vehicle vehicle_copy = new Vehicle();
-            vehicle_copy.getBackSideRadar().write(55);
-            vehicle_copy.getFrontSideRadar().write(30);
+            vehicle_copy.getBackSideRadar().write(-1);
+            vehicle_copy.getFrontSideRadar().write(-1);
             vehicle_copy.getLidar().writeIndex(45, 40);
 
             boolean leftLaneIndicator;
@@ -169,10 +169,10 @@ class VehicleTest {
 
         // Make a vehicle clone to fake the second query readings.
         Vehicle vehicle_copy = new Vehicle();
-        vehicle_copy.getBackSideRadar().write(55);
-        vehicle_copy.getFrontSideRadar().write(30);
-        vehicle_copy.getFrontRadar().write(3);
-        vehicle_copy.getLidar().writeIndex(45, 50);
+        vehicle_copy.getBackSideRadar().write(-1);
+        vehicle_copy.getFrontSideRadar().write(-1);
+        vehicle_copy.getFrontRadar().write(-1);
+        vehicle_copy.getLidar().writeIndex(45, -1);
 
         // We are not able to move forward, because the end of road will be detected.
         // Because the radar values are invalid moving forward will be invalidated using two different methods
@@ -218,7 +218,7 @@ class VehicleTest {
 
         // Assert that we did not change lane.
         assertFalse(changeLaneIndicator,
-                "The car can not change lane when there is no longitude distance to do so." +
+                "The car can not change lane when there is no longitude distance to do so. " +
                         "functioning and the road is at the end.");
 
         // Confirm that the car did move.
@@ -262,7 +262,7 @@ class VehicleTest {
     }
 
     @org.junit.jupiter.api.Test
-    void tc3_changeLane() {
+    void tc3_changeLane() { // TODO this test might be wrong.
         // Set it so that less than two sensors are functioning.
         vehicle.getBackSideRadar().write(45);
         vehicle.getFrontSideRadar().write(5);
@@ -273,7 +273,7 @@ class VehicleTest {
         vehicle_copy.getFrontSideRadar().write(45);
 
         // Invalid lidar reading, because it does not match the original.
-        vehicle_copy.getLidar().writeIndex(45, 33);
+        vehicle_copy.getLidar().writeIndex(45, -1);
 
         // The car will be able to move forward, because we are in the middle of the road.
         int gyro_value = 50;
