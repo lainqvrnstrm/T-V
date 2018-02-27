@@ -141,6 +141,7 @@ class VehicleMockito {
     @Test
     void scenario_3_failedSensors() {
 
+        // Lidar faulty readings
         int[] errorReadings = new int[360];
         for(int i = 0; i<errorReadings.length; i++)
             errorReadings[i] = -1;
@@ -190,6 +191,11 @@ class VehicleMockito {
     @Test
     void scenario_4_failedSensor() {
 
+        // Lidar faulty readings
+        int[] errorReadings = new int[360];
+        for(int i = 0; i<errorReadings.length; i++)
+            errorReadings[i] = -1;
+
         Vehicle vehicle  = new Vehicle(testGyro, testBackSideRadar, testFrontSideRadar, testFrontRadar, testLidar, testActuator);
 
         int[] leftSide_obstacle = new int[360];
@@ -198,11 +204,15 @@ class VehicleMockito {
 
         //the first query should detect something, the second query is returning invalid readings indicating broken sensor
 
-        when(testLidar.read()).thenReturn(leftSide_obstacle, no_obstacle, no_obstacle);
-        when(testGyro.getLongitude()).thenReturn( 4, 4, 9, 14, 19, 24, 29, 34, 39, 44, 49, 54, 59, 64, 69, 74, 79, 84, 89, 99);
-        when(testFrontSideRadar.read()).thenReturn(4.5, 0.0);
+        when(testLidar.read()).thenReturn(leftSide_obstacle);
+        when(cloneLidar.read()).thenReturn(errorReadings);
+        when(testGyro.getLongitude()).thenReturn( 4, 4, 9, 14, 19, 24, 29, 34, 39,
+                44, 49, 54, 59, 64, 69, 74, 79, 84, 89, 99);
+        when(testFrontSideRadar.read()).thenReturn(4.5);
+        when(cloneFrontSideRadar.read()).thenReturn(-1.0); // side to 4 then 0.
         when(testFrontRadar.read()).thenReturn(50.0);
-        when(testBackSideRadar.read()).thenReturn(4.0, 6.0);
+        when(testBackSideRadar.read()).thenReturn(4.0);
+        when(cloneBackSideRadar.read()).thenReturn(6.0);
 
 
         vehicle.moveForward();
@@ -210,10 +220,16 @@ class VehicleMockito {
 
         //changeLeft return false, the first query tells it there is a car on the left
 
+        // Vehicle requests to change left by querying the sensors
+        cloneFrontSideRadar.write(-1.0);
+        for(int i = 0; i < errorReadings.length; i++)
+            cloneLidar.writeIndex(i,-1);
+        Vehicle clone = new Vehicle(cloneLidar, cloneFrontSideRadar, cloneBackSideRadar);
+
         //The changeLane should throw an error, because the second query indicates broken sensor
 
         try{
-            vehicle.changeLane();
+            vehicle.changeLane(clone);
             fail("broken sensor");
         }catch(Error error){
             System.out.println("Error catched");
