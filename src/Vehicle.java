@@ -28,6 +28,12 @@ public class Vehicle { //tc0_moveForward()
         this.actuator = actuator; // Added for tc0_driveForward.
     }
 
+    public Vehicle(Lidar cloneLidar, Radar cloneFrontSideRadar, Radar cloneBackSideRadar) {
+        this.lidar = cloneLidar;
+        this.frontSideRadar = cloneFrontSideRadar;
+        this.backSideRadar = cloneBackSideRadar;
+    }
+
     public int getSpeed() {
         return speed;
     }

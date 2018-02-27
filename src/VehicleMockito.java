@@ -32,6 +32,11 @@ class VehicleMockito {
     @Mock private Lidar testLidar = mock(Lidar.class);
     @Mock private Actuator testActuator = mock(Actuator.class);
 
+    @Mock private Radar cloneBackSideRadar = mock(Radar.class);
+    @Mock private Radar cloneFrontSideRadar = mock(Radar.class);
+    @Mock private Lidar cloneLidar = mock(Lidar.class);
+
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(VehicleMockito.class);
@@ -104,16 +109,23 @@ class VehicleMockito {
         int[] no_obstacle = new int[360];
         obstacle[45] = 4;
 
-        when(testLidar.read()).thenReturn(no_obstacle, obstacle, no_obstacle); // sets no obstacle on the 2nd iteration of the lidar reading.
+        when(testLidar.read()).thenReturn(no_obstacle); // sets no obstacle on the 2nd iteration of the lidar reading.
+        when(cloneLidar.read()).thenReturn(obstacle);
         when(testGyro.getLongitude()).thenReturn( 5,   10, 100); // Ignore 11-99 as they are tested elsewhere.
         when(testFrontRadar.read()).thenReturn(10.0, 10.0, 10.0, 0.0); // Set front radar reading to 10.
-        when(testFrontSideRadar.read()).thenReturn(4.0, 0.0); // side to 4 then 0.
+        when(testFrontSideRadar.read()).thenReturn(4.0); // side to 4 then 0.
+        when(cloneFrontSideRadar.read()).thenReturn(0.0); // side to 4 then 0.
         when(testBackSideRadar.read()).thenReturn(4.0); // Obstacle detected when read.
 
         vehicle.moveForward(); // call the controller method to move forward.
         verify(testActuator).driveForward(anyBoolean(), anyObject(), anyInt());
 
-        vehicle.changeLane(); // call the controller method to change lane.
+        // Vehicle requests to change left by querying the sensors
+        cloneFrontSideRadar.write(2.0);
+        cloneLidar.writeIndex(45,2);
+        Vehicle clone = new Vehicle(cloneLidar, cloneFrontSideRadar, cloneBackSideRadar);
+
+        vehicle.changeLane(clone); // call the controller method to change lane.
         verify(testActuator, never()).changeLeft(false, testGyro);
 
         reset(testActuator); // Reset to check that it won't be called at the end.
