@@ -141,13 +141,16 @@ class VehicleMockito {
     @Test
     void scenario_3_failedSensors() {
 
-        int[] inaccurateReadings = {33, 22};
+        int[] errorReadings = new int[360];
+        for(int i = 0; i<errorReadings.length; i++)
+            errorReadings[i] = -1;
+
         //testing more extensively.
         when(testGyro.getLongitude()).thenReturn(4,  9, 14, 19, 24, 29, 34, 39, 44, 49, 54, 59, 64, 69, 74, 79, 84, 89, 99);
         //when(testGyro.getLongitude()).thenReturn(4, 9, 96);
-        when(testLidar.read()).thenReturn(inaccurateReadings);
+        when(testLidar.read()).thenReturn(errorReadings);
         when(testFrontRadar.read()).thenReturn(50.0);
-        when(testBackSideRadar.read()).thenReturn(99.0, 26.0);
+        when(testBackSideRadar.read()).thenReturn(-1.0);
 
         //Initialize the object for mockInjection
         Vehicle vehicle = new Vehicle(testGyro,testBackSideRadar,testFrontSideRadar,testFrontRadar,testLidar,testActuator);
