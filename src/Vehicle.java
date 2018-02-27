@@ -70,18 +70,6 @@ public class Vehicle { //tc0_moveForward()
         this.actuator = actuator;
     }
 
-    public void setBackSideRadar(Radar backSideRadar) {
-        this.backSideRadar = backSideRadar;
-    }
-
-    public void setFrontSideRadar(Radar frontSideRadar) {
-        this.frontSideRadar = frontSideRadar;
-    }
-
-    public void setLidar(Lidar lidar) {
-        this.lidar = lidar;
-    }
-
     /**
      * Moves the car 5 meters forward in the longitude position.
      * @return If the car's position has changed or not.
@@ -106,22 +94,16 @@ public class Vehicle { //tc0_moveForward()
         // If the gyro is less than the road distance and the move distance so we can't go beyond the road.
         double road_distance = 100;
 
-
         // Variable added for mockito to use continuous stubbing easier.
         int longitude = gyro.getLongitude();
 
+        boolean drive = (longitude <= road_distance-move_distance);
+
         // tc0: Increments the longitude of the gyro to simulate moving forward.
-        actuator.driveForward(!(longitude <= road_distance-move_distance), gyro, speed);
-        //this.gyro.longitude += (int) move_distance; //Added for tc0.
-
-        if(longitude <= road_distance-move_distance){ //Added for tc0.
-
-            // tc0: Returns true because incrementing the longitude moves the car. Returning true indicates a change of longitude.
-            return true;
-        }
+        actuator.driveForward(!drive, gyro, speed);
 
         // Return false because no happy branch was successful.
-        return false; //Added for tc0.
+        return drive; //Added for tc0.
     }
 
     /**

@@ -62,9 +62,9 @@ class VehicleMockito {
         lidarReading[45] = 25;
 
         //Assign values to the mocked objects.
-        when(testGyro.getLongitude()).thenReturn(4,9,99);
+        when(testGyro.getLongitude()).thenReturn(4,9,85);
         when(testLidar.read()).thenReturn(lidarReading);
-        when(testFrontRadar.read()).thenReturn(50.00);
+        when(testFrontRadar.read()).thenReturn(50.0, 40.0, 4.0);
         when(testBackSideRadar.read()).thenReturn(20.00);
         when(testFrontSideRadar.read()).thenReturn(20.00);
 
@@ -81,7 +81,7 @@ class VehicleMockito {
 
         //move forward until end
         vehicle.moveForward();
-        verify(testActuator).driveForward(false, testGyro,5);
+        verify(testActuator, times(2)).driveForward(false, testGyro,5);
         //Vehicle should not go further.
         reset(testActuator);
 
