@@ -147,7 +147,7 @@ public class UserInterface {
                 }
                 switch (map[i][j]) { // Only allow one car at one place.
                     case 1:
-                        System.out.print("ō͡≡o");
+                        System.out.print("-ō͡≡o");
                         j += car_length;
                         break;
                     default:
@@ -159,7 +159,6 @@ public class UserInterface {
 
         for (int i = 0; i < range; i++)
             System.out.print("|");
-
         System.out.println();
     }
 
