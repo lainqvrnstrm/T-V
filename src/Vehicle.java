@@ -65,9 +65,6 @@ public class Vehicle { //tc0_moveForward()
         this.speed = speed;
     }
 
-    public void setActuator(Actuator actuator) {
-        this.actuator = actuator;
-    }
 
     /**
      * Moves the car 5 meters forward in the longitude position.
@@ -75,14 +72,6 @@ public class Vehicle { //tc0_moveForward()
      */
     public boolean moveForward() {
         double reading = frontRadar.read(); // Added for tc2.
-
-        // If the queries values are different the sensor is not working properly.
-        // And we should not move with not working sensors.
-        // A half meter of different values is indicated as faulty readings.
-        double faultrange = 0.5;
-        if (reading > reading +faultrange || reading < reading -faultrange) { //Added for tc2.
-            return false;
-        }
 
         // If the sensor readings are less than the move distance, we do not move.
         double move_distance = speed;

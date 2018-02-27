@@ -43,8 +43,6 @@ class VehicleMockito {
         reset(testFrontSideRadar);
         reset(testGyro);
         reset(testLidar);
-        vehicle = mock(Vehicle.class);
-        vehicle.setActuator(mock(Actuator.class));
     }
 
     /*
