@@ -176,7 +176,6 @@ class VehicleMockito {
 
         verify(testActuator, times(18)).driveForward(false, testGyro,5);
 
-
         //Vehicle has met an obstruction and should not be able to move.
         reset(testActuator);
         vehicle.moveForward();
@@ -300,8 +299,6 @@ class VehicleMockito {
         verify(testActuator, times(1)).driveForward(false, testGyro, 5);
         verify(testActuator, never()).driveForward(true, testGyro, 5);
         reset(testActuator);
-        System.out.println("Longitudinal value: " + testGyro.getLongitude() + " should be 9");
-
 
         // Vehicle requests to change left by querying the sensors
         cloneFrontSideRadar.write(2.0);
@@ -312,21 +309,17 @@ class VehicleMockito {
 
         vehicle.changeLane(clone);
 
-
         // Verify
         verify(testActuator, times(1)).changeLeft(true, testGyro);
-        System.out.println(testGyro.getLongitude());
         verify(testActuator, never()).changeLeft(false, testGyro);
         verify(testActuator, times(1)).driveForward(false, testGyro, 5);
         reset(testActuator);
-        System.out.println("Longitudinal value: " + testGyro.getLongitude() + " should be 16");
 
-        // Vehicle moves to the end of the street and stops when faced with the obstacle at the end of the street.
-        for (int i = 16; i < 95; i += 5){
-            vehicle.moveForward();
-            System.out.println(i + " Longitudinal value: " + testGyro.getLongitude()  + " should be " +(i + 5));
-        }
-        verify(testActuator, times(15)).driveForward(false, testGyro, 5);
+
+        // Vehicle moves to the end of the street and stops when faced with the obstacle at the end of the street./
+        while (vehicle.moveForward());
+        // Verify
+        verify(testActuator, times(16)).driveForward(false, testGyro, 5);
         verify(testActuator, times(1)).driveForward(true, testGyro, 5);
 
         verifyNoMoreInteractions(testActuator);
