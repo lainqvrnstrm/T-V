@@ -326,5 +326,30 @@ class VehicleMockito {
         verifyNoMoreInteractions(testActuator);
 
     }
+
+    /*
+    Sets the car to have a very high speed, Making it only able to move one between indicating not enough room to move
+    again.
+     */
+    @Test
+    void scenario6_veryFastVehicle() {
+        //Assign values to the mocked objects.
+        when(testFrontRadar.read()).thenReturn(50.0, 50.0, 45.0);
+        when(testGyro.getLongitude()).thenReturn(4, 55); //2nd - nothing detected by the back side radar.
+
+        // The vehicle starts at the beginning of the street. The sensors are set to their default value, which means they are initially not detecting anything.
+        Vehicle vehicle  = new Vehicle(testGyro, testBackSideRadar, testFrontSideRadar, testFrontRadar, testLidar, testActuator);
+        vehicle.setSpeed(49);
+
+        // Can move.
+        vehicle.moveForward();
+        verify(testActuator, times(1)).driveForward(false, testGyro, vehicle.getSpeed());
+
+        // This should not be able to move.
+        vehicle.moveForward();
+        verify(testActuator, times(1)).driveForward(true, testGyro, vehicle.getSpeed());
+
+
+    }
     
 }
