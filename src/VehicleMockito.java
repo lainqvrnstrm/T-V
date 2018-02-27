@@ -280,21 +280,15 @@ class VehicleMockito {
 
          */
 
-        // Apparently you need a clone of the vehicle to insert a second reading....
-
-        Lidar lidarClone = mock(Lidar.class);
-        Radar frontSideRadarClone = mock(Radar.class);
-        Radar backSideRadarClone = mock(Radar.class);
-
         when(testLidar.read()).thenReturn(no_obstacle);  // 1st query - nothing detected.
-        when(lidarClone.read()).thenReturn(leftSide_obstacle);  // 2nd - detected.
+        when(cloneLidar.read()).thenReturn(leftSide_obstacle);  // 2nd - detected.
         when(testGyro.getLongitude()).thenReturn( 4,9, 14, 19, 24, 29, 34, 39, 44, 49, 54, 59, 64, 69, 74, 79, 84, 89, 99);
         when(testFrontRadar.read()).thenReturn(50.0,50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, // 10 first calls
                 46.0, 41.0, 36.0, 31.0, 26.0, 21.0, 16.0, 11.0, 6.0 , 1.0); // 10 last calls
         when(testFrontSideRadar.read()).thenReturn(50.0);  // 1st query - nothing detected.
-        when(frontSideRadarClone.read()).thenReturn(2.0);   // 2nd - detected.
+        when(cloneFrontSideRadar.read()).thenReturn(2.0);   // 2nd - detected.
         when(testBackSideRadar.read()).thenReturn(50.0);  // 1st query - nothing detected.
-        when(backSideRadarClone.read()).thenReturn(50.0); //2nd - nothing detected by the back side radar.
+        when(cloneBackSideRadar.read()).thenReturn(50.0); //2nd - nothing detected by the back side radar.
 
 
         // The vehicle starts at the beginning of the street. The sensors are set to their default value, which means they are initially not detecting anything.
@@ -310,15 +304,14 @@ class VehicleMockito {
 
 
         // Vehicle requests to change left by querying the sensors
-        frontSideRadarClone.write(2.0);
-        backSideRadarClone.write(50.0);
-        lidarClone.writeIndex(45,2);
-        Vehicle clone = new Vehicle();
-        clone.setLidar(lidarClone);
-        clone.setBackSideRadar(backSideRadarClone);
-        clone.setFrontSideRadar(frontSideRadarClone);
+        cloneFrontSideRadar.write(2.0);
+        cloneBackSideRadar.write(50.0);
+        cloneLidar.writeIndex(45,2);
+
+        Vehicle clone = new Vehicle(cloneLidar, cloneFrontSideRadar, cloneBackSideRadar);
 
         vehicle.changeLane(clone);
+
 
         // Verify
         verify(testActuator, times(1)).changeLeft(true, testGyro);
