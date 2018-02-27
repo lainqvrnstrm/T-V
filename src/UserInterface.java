@@ -51,9 +51,10 @@ public class UserInterface {
                     break;
                 case "save":
                     System.out.println("--------------------------");
+                    System.out.print(vehicles.size() + " ");
                     for (int i = 1; i < vehicles.size(); i++) {
-                        System.out.println(vehicles.get(i).getGyro().getLatitude());
-                        System.out.println(vehicles.get(i).getGyro().getLongitude());
+                        System.out.print(vehicles.get(i).getGyro().getLatitude() + " ");
+                        System.out.print(vehicles.get(i).getGyro().getLongitude() + " ");
                         System.out.println(vehicles.get(i).getSpeed());
                     }
                     System.out.println("--------------------------");
@@ -74,16 +75,11 @@ public class UserInterface {
     }
 
     private static ArrayList<Vehicle> createVehicles() {
-
-        // create a scanner so we can read the command-line input
         Scanner scanner = new Scanner(System.in);
 
         ArrayList<Vehicle> vehicles = new ArrayList<>();
 
-        // Vehicle we control.
-        vehicles.add(new Vehicle());
-
-        System.out.println("Specify number of additional cars:");
+        System.out.println("Specify number of cars:");
         int cars = scanner.nextInt();
 
         System.out.println("Specify lane (0-2) and distance (0-100) and speed (0-100)");
