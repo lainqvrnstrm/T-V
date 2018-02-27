@@ -3,10 +3,12 @@ import java.util.Scanner;
 
 /**
  * @author Pontus Laestadius
+ * Draws out a simulation in the terminal.
  */
 public class UserInterface {
 
     private static String[] commands = {"move", "change", "wait", "move"};
+    private static int car_length = 4;
 
     public static void main(String[] args) {
 
@@ -52,10 +54,10 @@ public class UserInterface {
                 case "save":
                     System.out.println("--------------------------");
                     System.out.print(vehicles.size() + " ");
-                    for (int i = 1; i < vehicles.size(); i++) {
-                        System.out.print(vehicles.get(i).getGyro().getLatitude() + " ");
-                        System.out.print(vehicles.get(i).getGyro().getLongitude() + " ");
-                        System.out.println(vehicles.get(i).getSpeed());
+                    for (Vehicle vehicle: vehicles) {
+                        System.out.print(vehicle.getGyro().getLatitude() + " ");
+                        System.out.print(vehicle.getGyro().getLongitude() + " ");
+                        System.out.println(vehicle.getSpeed());
                     }
                     System.out.println("--------------------------");
                 case "print":
@@ -74,6 +76,10 @@ public class UserInterface {
         }
     }
 
+    /**
+     * Will create a set of vehicles based on user given input.
+     * @return a list of vehicles in their indicated position.
+     */
     private static ArrayList<Vehicle> createVehicles() {
         Scanner scanner = new Scanner(System.in);
 
@@ -99,12 +105,16 @@ public class UserInterface {
                 "\nprint -> Print sensor data" +
                 "\nwait -> perform no action" +
                 "\nauto -> runs simulation automated" +
-                "\nsave -> prints out input for reentering"
+                "\nsave -> prints out input for re-entering"
         );
 
         return vehicles;
     }
 
+    /**
+     * Prints out all the sensor readings of given input.
+     * @param vehicles sensor data that will be printed
+     */
     private static void print(ArrayList<Vehicle> vehicles) {
         int i = 0;
         for (Vehicle vehicle: vehicles)
@@ -118,6 +128,10 @@ public class UserInterface {
             );
     }
 
+    /**
+     * Given a list of vehicles, will render a image to print to stdout.
+     * @param vehicles to render in stdout
+     */
     private static void render(ArrayList<Vehicle> vehicles) {
         int lanes = 3, range = 101;
         int map[][] = generateMap(vehicles);
@@ -134,11 +148,7 @@ public class UserInterface {
                 switch (map[i][j]) { // Only allow one car at one place.
                     case 1:
                         System.out.print("ō͡≡o");
-                        j += 3;
-                        break;
-                    case 2-Integer.MAX_VALUE:
-                        System.out.println("\nMultiple vehicles at the same position.");
-                        System.exit(2);
+                        j += car_length;
                         break;
                     default:
                         System.out.print("-");
@@ -153,6 +163,11 @@ public class UserInterface {
         System.out.println();
     }
 
+    /**
+     * Updates all vehicles sensors based on their positions.
+     * @param vehicles to set their readings and read from.
+     * @return a new list of vehicles which can be utilized.
+     */
     private static ArrayList<Vehicle> updateReadings(ArrayList<Vehicle> vehicles) {
 
         int map[][] = generateMap(vehicles);
@@ -168,7 +183,7 @@ public class UserInterface {
             int lati = vehicle.getGyro().getLatitude();
             int max = (longi+50 > 101 ?101:longi+50);
 
-            for (int i = longi+3; i < max; i++) { // Front detecting radar.
+            for (int i = longi+car_length; i < max; i++) { // Front detecting radar.
                 if (map[lati][i] == 1) {
                     vehicle.getFrontRadar().write(i-longi);
                     break;
@@ -176,22 +191,24 @@ public class UserInterface {
             }
 
             for (int i = 0; i < 3; i++) { // Sets side radars.
-
-                if (map[lati +1][(longi -i) < 0 ? 0: longi -i] == 1) {
+                if (map[lati +1][(longi -i) < 0 ? 0: longi -i] == 1)
                     vehicle.getBackSideRadar().write(4);
-                    vehicle.getLidar().writeIndex(45, 5);
-                }
-
-                if (map[lati +1][(longi +i) > 100?100:longi +i] == 1) {
+                if (map[lati +1][(longi +i) > 100?100:longi +i] == 1)
                     vehicle.getFrontSideRadar().write(4);
-                    vehicle.getLidar().writeIndex(45, 5);
-                }
             }
+
+            if (vehicle.getBackSideRadar().read() == 4 || vehicle.getFrontSideRadar().read() == 4)
+                vehicle.getLidar().writeIndex(45, 5);
+
         }
 
         return vehicles;
     }
 
+    /**
+     * @param vehicles gyro position used to render positions.
+     * @return a top-down view which indicates which positions are occupied and which are free.
+     */
     private static int[][] generateMap(ArrayList<Vehicle> vehicles) {
         int map[][] = new int[4][101]; // Size of map.
         for (int i = 0; i < 4; i++) // Set end of road border.
@@ -199,7 +216,7 @@ public class UserInterface {
         for (int i = 0; i < 101; i++) // Set top side border.
             map[3][i] = 1;
         for (Vehicle vehicle: vehicles)            // Draws it on a 2d map.
-            for (int i = vehicle.getGyro().getLongitude(); i < 100 && i < vehicle.getGyro().getLongitude()+3; i++)
+            for (int i = vehicle.getGyro().getLongitude(); i < 100 && i < vehicle.getGyro().getLongitude()+car_length; i++)
                 map[vehicle.getGyro().getLatitude()][i] = 1;
         return map;
     }
