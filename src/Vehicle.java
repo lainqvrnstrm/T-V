@@ -127,53 +127,56 @@ public class Vehicle { //tc0_moveForward()
      */
     //signature updated to take arguments.
     public boolean leftLaneDetect(Vehicle... secondQuery) throws Error {
+
+        // Phase 2: Added to validate cars with -1 broken sensors.
+        Vehicle second;
+        if (secondQuery.length != 0)
+            second = secondQuery[0];
+        else
+            second = this;
+
         //tc0: variables added to create leftLaneDetect.
         double[] readings = {backSideRadar.read(), frontSideRadar.read()};
         int[] lidars = lidar.read();
-
         double[] readingsSecondQuery = Arrays.copyOf(readings, 2);
-        int[] lidarsSecondQuery = lidar.read();
-        if (secondQuery.length != 0) {
-            System.out.println("heeeey");
-            readingsSecondQuery[0] = secondQuery[0].backSideRadar.read();
-            readingsSecondQuery[1] = secondQuery[0].frontSideRadar.read();
-            lidarsSecondQuery = secondQuery[0].lidar.read();
-        }
+        readingsSecondQuery[0] = second.backSideRadar.read();
+        readingsSecondQuery[1] = second.frontSideRadar.read();
+        int[] lidarsSecondQuery = second.lidar.read();
 
         // tc0: Throw error with less than two working sensors.
         // Phase 2: Updated to use -1 for broken sensors.
         // Keeps track of which sensor works.
 
+        int angle = 45;
         {
             int workingSensors_count = 0;
 
-            for (int i = 0; i < 3; i++) {
-                if (readings[0] != -1 && readingsSecondQuery[0] != -1)
+            for (int i = 0; i < 2; i++) {
+                if (readings[i] != -1 && readingsSecondQuery[i] != -1)
                     workingSensors_count++;
             }
+
+            if (lidars[angle] != -1 && lidarsSecondQuery[angle] != -1)
+                workingSensors_count++;
 
             // tc0: throws errors for invalid number of functioning sensors.
             if (workingSensors_count < 2)
                 throw new Error("Not enough working sensors.");
-
         }
 
         //Queries needed for tc1_leftlaneDetect to determine if 2 or more sensors are working.
         double obstacle_distance = speed;
-        int angle = 45;
         // Query 1.
         if (readings[0] < obstacle_distance ||
                 readings[1] < obstacle_distance ||
                 lidars[angle] < obstacle_distance)
             return true;
 
-
         // Query 2.
         if (readingsSecondQuery[0] < obstacle_distance ||
                 readingsSecondQuery[1] < obstacle_distance ||
                 lidarsSecondQuery[angle] < obstacle_distance)
             return true;
-
 
         // tc1: No obstacle detected.
         return false;
@@ -188,21 +191,17 @@ public class Vehicle { //tc0_moveForward()
         // tc0: Catches invalid leftLaneDetect.getValue1()ect errors.
         try {
             boolean leftLaneDetect = leftLaneDetect(secondQuery);
+            boolean changingLane = !leftLaneDetect && gyro.getLongitude() <= 95;
 
             // tc1: Changes the lane to the left.
-            actuator.changeLeft(leftLaneDetect && gyro.getLongitude() <= 95, gyro);
-            System.out.println("NOT CRASH");
+            actuator.changeLeft(!changingLane, gyro);
 
             // tc1: If we can change lane.
-            if (!leftLaneDetect && gyro.getLongitude() <= 95) {
-
-                // tc1: Return a successful change lane.
-                return true;
-            }
+            // tc1: Return a successful change lane.
+            return changingLane;
 
             // tc0: Less than two working sensors will receive an error.
         } catch (Error error) {
-            System.out.println("CRASH");
             // tc0: No action is intended.
         } finally {
 

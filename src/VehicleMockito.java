@@ -107,7 +107,7 @@ class VehicleMockito {
         when(testLidar.read()).thenReturn(no_obstacle, obstacle, no_obstacle); // sets no obstacle on the 2nd iteration of the lidar reading.
         when(testGyro.getLongitude()).thenReturn( 5,   10, 100); // Ignore 11-99 as they are tested elsewhere.
         when(testFrontRadar.read()).thenReturn(10.0, 10.0, 10.0, 0.0); // Set front radar reading to 10.
-        when(testFrontSideRadar.read()).thenReturn(4.0, 0.0); // side to 4 then 0.
+        when(testFrontSideRadar.read()).thenReturn(4.0); // side to 4 then 0.
         when(testBackSideRadar.read()).thenReturn(4.0); // Obstacle detected when read.
 
         vehicle.moveForward(); // call the controller method to move forward.
