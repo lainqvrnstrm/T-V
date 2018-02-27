@@ -141,17 +141,17 @@ public class Vehicle { //tc0_moveForward()
         }
 
         // tc0: Throw error with less than two working sensors.
+        // Phase 2: Updated to use -1 for broken sensors.
         // Keeps track of which sensor works.
 
         {
-            boolean[] workingSensors = new boolean[3];
-            workingSensors[0] = (readings[0] == readingsSecondQuery[0]);
-            workingSensors[1] = (readings[1] == readingsSecondQuery[1]);
-            workingSensors[2] = Arrays.equals(lidars, lidarsSecondQuery);
-
             int workingSensors_count = 0;
-            for (boolean item: workingSensors)
-                workingSensors_count += item?1:0;
+
+            for (int i = 0; i < 3; i++) {
+                if (readings[0] != -1 && readingsSecondQuery[0] != -1)
+                    workingSensors_count++;
+            }
+
             // tc0: throws errors for invalid number of functioning sensors.
             if (workingSensors_count < 2)
                 throw new Error("Not enough working sensors.");
@@ -191,7 +191,7 @@ public class Vehicle { //tc0_moveForward()
 
             // tc1: Changes the lane to the left.
             actuator.changeLeft(leftLaneDetect && gyro.getLongitude() <= 95, gyro);
-            System.out.println("WT!!!!!!!!!!!");
+            System.out.println("NOT CRASH");
 
             // tc1: If we can change lane.
             if (!leftLaneDetect && gyro.getLongitude() <= 95) {
@@ -202,6 +202,7 @@ public class Vehicle { //tc0_moveForward()
 
             // tc0: Less than two working sensors will receive an error.
         } catch (Error error) {
+            System.out.println("CRASH");
             // tc0: No action is intended.
         } finally {
 
