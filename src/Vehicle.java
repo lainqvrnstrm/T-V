@@ -184,13 +184,13 @@ public class Vehicle { //tc0_moveForward()
         try {
             boolean leftLaneDetect = leftLaneDetect(secondQuery);
 
-
+            // tc1: Changes the lane to the left.
+            actuator.changeLeft(leftLaneDetect && gyro.getLongitude() <= 95, gyro);
+            System.out.println("WT!!!!!!!!!!!");
 
             // tc1: If we can change lane.
             if (!leftLaneDetect && gyro.getLongitude() <= 95) {
 
-                // tc1: Changes the lane to the left.
-                actuator.changeLeft(leftLaneDetect&& gyro.getLongitude() <= 95, gyro);
                 // tc1: Return a successful change lane.
                 return true;
             }
