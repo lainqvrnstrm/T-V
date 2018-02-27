@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 public class Vehicle { //tc0_moveForward()
@@ -160,14 +159,11 @@ public class Vehicle { //tc0_moveForward()
                 lidars[angle] < obstacle_distance)
             return true;
 
-        // Query 2.
-        if (readingsSecondQuery[0] < obstacle_distance ||
-                readingsSecondQuery[1] < obstacle_distance ||
-                lidarsSecondQuery[angle] < obstacle_distance)
-            return true;
-
+        // Query 2. Return if it detected or not.
         // tc1: No obstacle detected.
-        return false;
+        return  (readingsSecondQuery[0] < obstacle_distance ||
+                readingsSecondQuery[1] < obstacle_distance ||
+                lidarsSecondQuery[angle] < obstacle_distance);
     }
 
     /**
