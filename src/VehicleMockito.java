@@ -150,7 +150,6 @@ class VehicleMockito {
 
         //testing more extensively.
         when(testGyro.getLongitude()).thenReturn(4,  9, 14, 19, 24, 29, 34, 39, 44, 49, 54, 59, 64, 69, 74, 79, 84, 89, 99);
-        //when(testGyro.getLongitude()).thenReturn(4, 9, 96);
         when(testLidar.read()).thenReturn(errorReadings);
         when(testFrontRadar.read()).thenReturn(50.0);
         when(testBackSideRadar.read()).thenReturn(-1.0);
@@ -252,9 +251,8 @@ class VehicleMockito {
     }
 
     /**
-
+     * Scenario 5.
      * An obstacle is NOT detected in the first query but is in the second, when trying to change to the left lane.
-
      * This should result in the vehicle NOT changing lane.
      */
 
