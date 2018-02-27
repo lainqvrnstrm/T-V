@@ -1,11 +1,8 @@
-
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -91,6 +88,11 @@ class VehicleMockito {
 
     }
 
+    /*
+    Moves forward
+    Tries to change lane -> will detect object in both query reading.
+    move toward the end of the road until you run in the wall.
+     */
     @Test
     void scenario2_obstacleDetectedTwice() {
         /*
@@ -257,7 +259,6 @@ class VehicleMockito {
 
     @Test
     void scenario5_obstacleDetectedOnce() {
-
 
         // Lidar readings
         int[] leftSide_obstacle = new int[360];

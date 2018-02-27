@@ -132,7 +132,7 @@ public class UserInterface {
      * Given a list of vehicles, will render a image to print to stdout.
      * @param vehicles to render in stdout
      */
-    private static void render(ArrayList<Vehicle> vehicles) {
+    static void render(ArrayList<Vehicle> vehicles) {
         int lanes = 3, range = 101;
         int map[][] = generateMap(vehicles);
         for (int i = 0; i < range; i++)
